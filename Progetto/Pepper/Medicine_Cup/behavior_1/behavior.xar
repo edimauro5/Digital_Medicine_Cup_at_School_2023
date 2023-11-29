@@ -1,0 +1,1864 @@
+<?xml version="1.0" encoding="UTF-8" ?><ChoregrapheProject xmlns="http://www.aldebaran-robotics.com/schema/choregraphe/project.xsd" xar_version="3"><Box name="root" id="-1" localization="8" tooltip="Root box of Choregraphe&apos;s behavior. Highest level possible." x="0" y="0"><bitmap>media/images/box/root.png</bitmap><script language="4"><content><![CDATA[]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" /><Timeline enable="0"><BehaviorLayer name="behavior_layer1"><BehaviorKeyframe name="keyframe1" index="1"><Diagram scale="70.7107"><Box name="Set Language" id="2" localization="8" tooltip="Set the language of your robot for the current application. Your robot will speak and understand the selected language as long as your application has focus. Any following call to ALSpeechRecognition (Speech Reco. box for instance), ALTextToSpeech (Say box for instance) or ALDialog will use this language.&#x0A;" x="76" y="16"><bitmap>media/images/box/interaction/say.png</bitmap><script language="4"><content><![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        try:
+            self.tts = ALProxy("ALTextToSpeech")
+        except:
+            self.logger.warn("ALTextToSpeech is not available, language setting cannot be applied to speech")
+            self.tts = None
+
+        try:
+            self.asr = ALProxy("ALSpeechRecognition")
+        except:
+            self.logger.warn("ALSpeechRecognition is not available, language setting cannot be applied to recognition")
+            self.asr = None
+
+        try:
+            self.dialog = ALProxy("ALDialog")
+        except:
+            self.logger.warn("ALDialog is not available, language setting cannot be applied to dialog")
+            self.dialog = None
+
+    def onInput_onSet(self):
+        lang = self.getParameter("Language")
+        try:
+            if self.asr:
+                self.asr.setLanguage( self.getParameter("Language") )
+            if self.tts:
+                self.tts.setLanguage( self.getParameter("Language") )
+            if self.dialog:
+                self.dialog.setLanguage( self.getParameter("Language") )
+            if self.tts is None and self.asr is None and self.dialog is None:
+                raise RuntimeError("Cannot set language: neither ALTextToSpeech nor ALSpeechRecognition nor ALDialog is available.")
+            self.onReady()
+        except:
+            error = "Language " + lang + " cannot be set."
+            self.logger.warn(error)
+            self.onError(error)]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onSet" type="1" type_size="1" nature="1" inner="0" tooltip="The data is set when a signal is received on this input." id="2" /><Output name="onReady" type="1" type_size="1" nature="2" inner="0" tooltip="Signal sent when the data has been set." id="3" /><Output name="onError" type="3" type_size="1" nature="2" inner="0" tooltip="Error output:&#x0A;- triggered if the language asked cannot be set" id="4" /><Parameter name="Language" inherits_from_parent="0" content_type="3" value="Italian" default_value="English" custom_choice="1" tooltip="Set the language the robot speaks and understands." id="5"><Choice value="Arabic" /><Choice value="Brazilian" /><Choice value="Chinese" /><Choice value="Czech" /><Choice value="Danish" /><Choice value="Dutch" /><Choice value="English" /><Choice value="Finnish" /><Choice value="French" /><Choice value="German" /><Choice value="Greek" /><Choice value="Italian" /><Choice value="Japanese" /><Choice value="Korean" /><Choice value="MandarinTaiwan" /><Choice value="Norwegian" /><Choice value="Polish" /><Choice value="Portuguese" /><Choice value="Russian" /><Choice value="Spanish" /><Choice value="Swedish" /><Choice value="Turkish" /></Parameter><Resource name="Speech" type="Lock" timeout="0" /></Box><Box name="MQTT" id="6" localization="8" tooltip="Aggiunge al path la directory del package Paho-MQTT precedentemente importato, a cura dell&apos;utente, nel progetto&#x0A;Imposta i parametri per il broker MQTT." x="204" y="15"><bitmap>media/images/box/box-diagram.png</bitmap><script language="4"><content><![CDATA[]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="" id="2" /><Output name="onStopped" type="1" type_size="1" nature="2" inner="0" tooltip="" id="3" /><Parameter name="Hostname" inherits_from_parent="0" content_type="3" value="127.0.0.1" default_value="127.0.0.1" custom_choice="1" tooltip="" id="4" /><Parameter name="Porta" inherits_from_parent="0" content_type="1" value="1883" default_value="1883" min="0" max="100000" tooltip="" id="5" /><Parameter name="Username" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="6" /><Parameter name="Password" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="7" /><Parameter name="Cartella package" inherits_from_parent="0" content_type="3" value="Libreria MQTT" default_value="Paho-MQTT" custom_choice="1" tooltip="Directory, importata nel progetto, che contiene il package Paho-MQTT" id="8" /><Timeline enable="0"><BehaviorLayer name="behavior_layer1"><BehaviorKeyframe name="keyframe1" index="1"><Diagram scale="118.921"><Box name="Set Library Path" id="7" localization="8" tooltip="Aggiunge al path la directory della  libreria MQTT precedentemente importata, a cura dell&apos;utente, nel progetto" x="156" y="40"><bitmap>media/images/box/box-python-script.png</bitmap><script language="4"><content><![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        # initialize method
+        # "__init__" is a constructor. It is called when an object is created from a class
+        # "self"  is used to represent the instance of a class.
+        # By using the "self" keyword we access the attributes and methods of the class
+        # When the behavior starts to play, the initialize method is executed first
+        # It is a function which resets the basic box parameters that are common to all the boxes in Choregraphe.
+        # After that, the box is a “module” running in NAOqi, on the robot.
+        # The box has also initialized all its “parameters” so they are now available in the script.
+        # This method is called once per behavior.
+        GeneratedClass.__init__(self)
+
+    def onLoad(self):
+        # puts code for box initialization here
+        # This method is called when the box flow diagram is loading.
+        # It is necessarily called after the __init__ method of all the boxes of the current behavior.
+        # When a flow diagram is loading, this method is called on each box of current level before any IO can be stimulated.
+        self.modifiedPath = None
+        self.relativeMQTTLibraryFolder = self.getParameter("Cartella package")
+
+    def onUnload(self):
+        # puts code for box cleanup here
+        # This method is called when the box flow diagram is unloading.
+        # When a flow diagram is unloading, this method is called on each box of current level.
+        # After the flow diagram unloading, boxes are disabled and cannot receive any event on their inputs.
+        # Note that the method usually stop everything running in the script, that is what you expect of the onStop input.
+        # That is why the latter calls onUnload by default.
+        if self.modifiedPath and self.absoluteMQTTLibraryFolder and self.absoluteMQTTLibraryFolder in sys.path:
+            sys.path.remove(self.absoluteMQTTLibraryFolder)    # removes the MQTT library folder from path
+            self.modifiedPath = False                          # set to false modifiedPath variable
+            self.pathRemoved()                                 # stimulates pathRemoved output port
+
+    def onInput_addPath(self):
+        # To access to a resource of your application, get the path where your application is installed.
+        # You can do this by removing the relative behavior path from the previous seen behavior absolute path.
+        application_path = self.behaviorAbsolutePath().replace(self.behaviorRelativePath(), "")
+        self.absoluteMQTTLibraryFolder = os.path.join(application_path, self.relativeMQTTLibraryFolder)
+        self.logger.info ("Folder: " + self.absoluteMQTTLibraryFolder + " will be added to system path" )
+        # Your path (the list of directories Python goes through to search for modules and files)
+        # is stored in the path attribute of the sys module.
+        # Since path is a list, you can use the append method to add new directories to the path
+        if self.absoluteMQTTLibraryFolder not in sys.path:
+            sys.path.append(self.absoluteMQTTLibraryFolder)    # add the MQTT library folder from path
+            self.modifiedPath = True                           # set to true modifiedPath variable
+            self.pathAdded()                                   # stimulates pathAdded output port
+
+    def onInput_removePath(self):
+        self.onUnload()]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="addPath" type="1" type_size="1" nature="2" inner="0" tooltip='Il blocco, azionato dall&apos;arrivo di un segnale su questo input, carica le librerie dalla cartella &quot;Libreria MQTT&quot;.' id="2" /><Input name="removePath" type="1" type_size="1" nature="3" inner="0" tooltip="Il blocco, azionato dall&apos;arrivo di un segnale su questo input, rimuove le librerie caricate." id="3" /><Output name="pathAdded" type="1" type_size="1" nature="1" inner="0" tooltip="E&apos; il segnale inviato alla fine dell&apos;esecuzione del blocco se le librerie sono state caricate correttamente." id="4" /><Output name="pathRemoved" type="1" type_size="1" nature="1" inner="0" tooltip="E&apos; il segnale inviato alla fine dell&apos;esecuzione del blocco se le librerie sono state rimosse correttamente." id="5" /></Box><Box name="Set MQTT Parameters" id="8" localization="8" tooltip="Impostazione dei parametri per il broker MQTT." x="309" y="46"><bitmap>media/images/box/box-python-script.png</bitmap><script language="4"><content><![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        # initialize method
+        # "__init__" is a constructor. It is called when an object is created from a class
+        # "self"  is used to represent the instance of a class.
+        # By using the "self" keyword we access the attributes and methods of the class
+        # When the behavior starts to play, the initialize method is executed first
+        # It is a function which resets the basic box parameters that are common to all the boxes in Choregraphe.
+        # After that, the box is a “module” running in NAOqi, on the robot.
+        # The box has also initialized all its “parameters” so they are now available in the script.
+        # This method is called once per behavior.
+        GeneratedClass.__init__(self)
+
+    def onLoad(self):
+        # puts code for box initialization here
+        # This method is called when the box flow diagram is loading.
+        # It is necessarily called after the __init__ method of all the boxes of the current behavior.
+        # When a flow diagram is loading, this method is called on each box of current level before any IO can be stimulated.
+        pass
+
+    def onUnload(self):
+        # puts code for box cleanup here
+        # This method is called when the box flow diagram is unloading.
+        # When a flow diagram is unloading, this method is called on each box of current level.
+        # After the flow diagram unloading, boxes are disabled and cannot receive any event on their inputs.
+        # Note that the method usually stop everything running in the script, that is what you expect of the onStop input.
+        # That is why the latter calls onUnload by default.
+        pass
+
+    def onInput_onStart(self):
+        # This method is called when the onStart input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        ###
+        # The NAOqi executable which runs on the robot is a broker. When it starts, it loads some libraries.
+        # Each library contains one or more modules (tipically a class) that use the broker to advertise their methods.
+        # ALMemory is the module to access to the shared memory of the robot called AlMemory.
+        # ALMemory is a centralized memory used to store all key information related to the hardware configuration of your robot.
+        # ALMemory provides information about the current state of the Actuators and the Sensors.
+        # ALMemory can also be used to store and retrieve named values, and act as a hub for the distribution of event
+        # The "session" object allows you to connect to the robot functions using the "service" method
+        # The service method takes the name of the service to which you intend to connect (ALMemory) and returns a proxy to connect to it
+        # memory is a proxy, in practice an object, that through the insertData method, inserts a key-value pair into memory,
+        # where key is the name of the value to be inserted and value is the value to be inserted
+        memory = self.session().service("ALMemory")
+        hostname = self.getParameter("Hostname")
+        port = self.getParameter("Porta")
+        username = self.getParameter("Username")
+        password = self.getParameter("Password")
+        memory.insertData("Pepper/mqtt/hostname",hostname)
+        memory.insertData("Pepper/mqtt/port",port)
+        memory.insertData("Pepper/mqtt/username",username)
+        memory.insertData("Pepper/mqtt/password",password)
+        self.onStopped()
+
+    def onInput_onStop(self):
+        self.onUnload()
+        self.onStopped()]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="" id="4" /></Box><Link inputowner="0" indexofinput="3" outputowner="8" indexofoutput="4" /><Link inputowner="7" indexofinput="2" outputowner="0" indexofoutput="2" /><Link inputowner="8" indexofinput="2" outputowner="7" indexofoutput="4" /></Diagram></BehaviorKeyframe></BehaviorLayer></Timeline></Box><Box name="Dialog" id="3" localization="8" tooltip="An example of multilanguage dialog implementation" x="600" y="8"><dialogFile>../Medicine_Cup/Medicine_Cup.dlg</dialogFile><bitmap>media/images/box/box-dialog.png</bitmap><script language="4"><content><![CDATA[]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" /><Input name="onData" type="1" type_size="1" nature="1" inner="0" tooltip="" id="4" /><Input name="onMyError" type="1" type_size="1" nature="1" inner="0" tooltip="" id="5" /><Input name="onEnd" type="1" type_size="1" nature="1" inner="0" tooltip="" id="6" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="7" /><Output name="BPM_AttivaControllo" type="1" type_size="1" nature="2" inner="0" tooltip="" id="8" /><Output name="BPM_TerminaControllo" type="1" type_size="1" nature="2" inner="0" tooltip="" id="9" /><Output name="RPM_AttivaControllo" type="1" type_size="1" nature="2" inner="0" tooltip="" id="10" /><Output name="RPM_TerminaControllo" type="1" type_size="1" nature="2" inner="0" tooltip="" id="11" /><Output name="ECG_AttivaControllo" type="1" type_size="1" nature="2" inner="0" tooltip="" id="12" /><Output name="ECG_TerminaControllo" type="1" type_size="1" nature="2" inner="0" tooltip="" id="13" /><Output name="BATTERIA_AttivaControllo" type="1" type_size="1" nature="2" inner="0" tooltip="" id="14" /><Output name="BATTERIA_TerminaControllo" type="1" type_size="1" nature="2" inner="0" tooltip="" id="15" /><Output name="ACCGYRO_AttivaControllo" type="1" type_size="1" nature="2" inner="0" tooltip="" id="16" /><Output name="ACCGYRO_TerminaControllo" type="1" type_size="1" nature="2" inner="0" tooltip="" id="17" /><Output name="OVERVIEW_AttivaControllo" type="1" type_size="1" nature="2" inner="0" tooltip="" id="18" /><Output name="OVERVIEW_TerminaControllo" type="1" type_size="1" nature="2" inner="0" tooltip="" id="19" /><Output name="Richiesta" type="3" type_size="1" nature="2" inner="0" tooltip="" id="20" /><Resource name="Speech" type="Lock" timeout="0" /><Resource name="Speech recognition" type="Lock" timeout="0" /></Box><Box name="Battiti Per Minuto - Comandi" id="5" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="48" y="540"><bitmap>media/images/box/box-script.png</bitmap><script language="4"><content><![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("-attiva controllo bpm\n-termina controllo bpm")]]></content></script><pluginContent><text><![CDATA[-attiva controllo bpm
+-termina controllo bpm]]></text></pluginContent><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" /></Box><Box name="Respirazioni Per Minuto - Comandi" id="1" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="308" y="540"><bitmap>media/images/box/box-script.png</bitmap><script language="4"><content><![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("-attiva controllo rpm\n-termina controllo rpm")]]></content></script><pluginContent><text><![CDATA[-attiva controllo rpm
+-termina controllo rpm]]></text></pluginContent><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" /></Box><Box name="Battiti Per Minuto" id="7" localization="8" tooltip="Tenta di collegarsi al topic formato da ciò che è contenuto nel parametro [Topic] + &apos;R2R&apos;&#x0A;Se per il tempo in secondi specificato dal parametro [Timeout] non vengono ricevuti messaggi l&apos;esecuzione del blocco si interrompe&#x0A;Il numero di pacchetti che può ricevere è specificato dal parametro [NumeroMessaggi] (0 = infiniti messaggi)&#x0A;Una volta ricevuto il pacchetto contenente i valori associati ai Battiti Per Minuto ne estrapola il valore e lo stato (1 = dato stabile, 2 = dato instabile). Questi valori vengono forniti in output rispettivamente attraverso le porte [Dato] e [Stato]" x="153" y="329"><bitmap>media/images/box/sensors/STM.png</bitmap><script language="4"><content><![CDATA[import json
+class MyClass(GeneratedClass):
+
+    def __init__(self):
+        # initialize method
+        # "__init__" is a constructor. It is called when an object is created from a class
+        # "self"  is used to represent the instance of a class.
+        # By using the "self" keyword we access the attributes and methods of the class
+        # When the behavior starts to play, the initialize method is executed first
+        # It is a function which resets the basic box parameters that are common to all the boxes in Choregraphe.
+        # After that, the box is a “module” running in NAOqi, on the robot.
+        # The box has also initialized all its “parameters” so they are now available in the script.
+        # This method is called once per behavior.
+        GeneratedClass.__init__(self)
+        self.errImportMQTTLibrary = "Impossibile accedere alla libreria MQTT"
+        self.errBrokerConnection = "Impossibile connettersi al broker"
+        self.errTimeout = "Stato dispositivo BPM non pervenuto"
+
+    def onLoad(self):
+        #~ puts code for box initialization here
+        # This method is called when the box flow diagram is loading.
+        # It is necessarily called after the __init__ method of all the boxes of the current behavior.
+        # When a flow diagram is loading, this method is called on each box of current level before any IO can be stimulated.
+        self.timeout = self.getParameter("Timeout")            # timeout for receiving the message
+        self.topic = self.getParameter("Topic")                # Topic to receive messages
+        self.msgnum = self.getParameter("NumeroMessaggi")      # Number of messages to receive
+
+    def setParameter(self, parameterName, newValue):
+        # The callback for when the parameter "Topic" is changed
+        if(parameterName == "Topic"):              # "Topic" is changed
+            self.logger.info(newValue)
+            self.topic = newValue                  # new value for "Topic"
+        self.logger.info("setParameter STOP")
+
+    def on_connect(self, client, userdata, flags, rc):
+        # The callback for when the client receives a CONNACK response from the server
+        self.logger.info ("Connected with result code "+str(rc))
+
+    def on_message(self, client, userdata, msg):
+        # The callback for when a PUBLISH message is received from the server.
+        self.msgnum -= 1                # Decrease the number of messages to receive
+
+        self.Dato(int(json.loads(str(msg.payload))["heartrate"]))
+        self.Stato(int(json.loads(str(msg.payload))["status"]))
+
+        self.timer.stop()               # Stops the current timer
+        self.timer.start(False)         # Restarts the timer (for another message)
+
+        if (self.msgnum == 0):          # All requested messages have been received
+            self.onInput_onStop()       # The block is completed
+
+    def onTimer(self):
+        # Timer callback - Timer box taken as a reference
+        self.timer.stop()              # Stop the timer
+        self.Errore(self.errTimeout)   # Timeout error
+        self.client.loop_stop()        # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()      # disconnects from the broker
+
+    def startTimer(self):
+        # The timer starts after self.timeout seconds - Timer box taken as a reference
+        import qi                                 # Import the qi framework
+        self.timer = qi.PeriodicTask()            # timer is an object to execute an operation periodically and asynchronously
+        self.timer.setCallback(self.onTimer)      # set the callback used by the periodictask
+        self.timer.setUsPeriod(self.timeout * 1000 * 1000)    # Set the call interval in microseconds.
+        self.timer.start(False)                   # True: immediate callback ; False: after first period
+
+    def onInput_onStart(self):
+        # This method is called when the onStart input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        try:
+            # The package that implements MQTT in Python is paho-mqtt
+            # The package has 3 modules: client, publish, subscribe
+            # publish and subscribe provide support functions to allow publication and subscription of messages in a one-shot manner
+            # The client module provides the Client class to manage the connection with the broker, sending and receiving messages.
+            import paho.mqtt.client as mqtt
+        except:
+            self.Errore(self.errImportMQTTLibrary)
+
+        # The NAOqi executable which runs on the robot is a broker. When it starts, it loads some libraries.
+        # Each library contains one or more modules (tipically a class) that use the broker to advertise their methods.
+        # ALMemory is the module to access to the shared memory of the robot called AlMemory.
+        # ALMemory is a centralized memory used to store all key information related to the hardware configuration of your robot.
+        # ALMemory provides information about the current state of the Actuators and the Sensors.
+        # ALMemory can also be used to store and retrieve named values, and act as a hub for the distribution of event
+        # The "session" object allows you to connect to the robot functions using the "service" method
+        # The service method takes the name of the service to which you intend to connect (ALMemory) and returns a proxy to connect to it
+        # memory is a proxy, in practice an object, that through the getData method, accesses a previously defined variable
+        memory = self.session().service("ALMemory")
+        url = memory.getData("Pepper/mqtt/hostname")
+        pwd = memory.getData("Pepper/mqtt/password")
+        port = int(memory.getData("Pepper/mqtt/port"))
+        usn = memory.getData("Pepper/mqtt/username")
+
+        #Topic to subscribe to receive the status of bpm
+        self.topic_R2R = self.topic + '/R2R'
+        self.logger.info ("R2R: " + self.topic_R2R)
+
+        self.client = mqtt.Client()    # self.client is the object instance of the Client class
+        if usn and pwd:                                 # If username and password are set
+            self.client.username_pw_set(usn,pwd)        # then they are associated with the "client" object
+
+        self.client.on_connect = self.on_connect        # binds the connection to callback function "on_connect"
+
+        self.client.on_message = self.on_message        # binds the receipt of a message to the callback function "on_message"
+
+        try:
+            # connects to the broker (IP, port, keepalive)
+            # keepalive:  maximum period in seconds allowed between communications with the broker.
+            #  If no other messages are being exchanged,the client will send ping messages to the broker
+            self.client.connect(url, port, 60)
+        except:
+            self.Errore(self.errBrokerConnection)
+
+        self.startTimer()                               # start the timer
+        self.client.subscribe (self.topic_R2R)          # Subscribe to the topic to receive the message
+
+        # Callbacks are dependent on the client loop as without the loop the callbacks aren’t triggered.
+        self.client.loop_forever()
+
+
+    def onInput_onStop(self):
+        # This method is called when the onStop input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        self.timer.stop()                  # stop the timer
+        self.client.loop_stop()            # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()          # Disconnects from the broker
+        self.msgnum = self.getParameter("NumeroMessaggi")      # Reset number of messages to receive
+        self.onStopped()                   # Stimulates the onStopped output of the box
+
+    def onUnload(self):
+        #put clean-up code here
+        try:
+            self.client.disconnect ()          # Disconnects from the broker
+        except:
+            pass]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" /><Output name="Errore" type="3" type_size="1" nature="1" inner="0" tooltip="" id="5" /><Output name="Dato" type="2" type_size="1" nature="2" inner="0" tooltip="" id="6" /><Output name="Stato" type="2" type_size="1" nature="2" inner="0" tooltip="" id="7" /><Parameter name="Topic" inherits_from_parent="0" content_type="3" value="unisadiem/dmcs/sensor" default_value="" custom_choice="0" tooltip="" id="8" /><Parameter name="NumeroMessaggi" inherits_from_parent="0" content_type="1" value="0" default_value="0" min="0" max="100" tooltip="" id="9" /><Parameter name="Timeout" inherits_from_parent="0" content_type="1" value="60" default_value="60" min="1" max="100" tooltip="" id="10" /></Box><Box name="Respirazioni Per Minuto" id="9" localization="8" tooltip="Tenta di collegarsi al topic formato da ciò che è contenuto nel parametro [Topic] + &apos;BREATH_ANNOTATION&apos;&#x0A;Se per il tempo in secondi specificato dal parametro [Timeout] non vengono ricevuti messaggi l&apos;esecuzione del blocco si interrompe&#x0A;Il numero di pacchetti che può ricevere è specificato dal parametro [NumeroMessaggi] (0 = infiniti messaggi)&#x0A;Una volta ricevuto il pacchetto contenente i valori associati alle Respirazioni Per Minuto ne estrapola il valore. Questo valore viene fornito in output attraverso la porta [Dato]" x="398" y="331"><bitmap>media/images/box/sensors/STM.png</bitmap><script language="4"><content><![CDATA[import json
+class MyClass(GeneratedClass):
+
+    def __init__(self):
+        # initialize method
+        # "__init__" is a constructor. It is called when an object is created from a class
+        # "self"  is used to represent the instance of a class.
+        # By using the "self" keyword we access the attributes and methods of the class
+        # When the behavior starts to play, the initialize method is executed first
+        # It is a function which resets the basic box parameters that are common to all the boxes in Choregraphe.
+        # After that, the box is a “module” running in NAOqi, on the robot.
+        # The box has also initialized all its “parameters” so they are now available in the script.
+        # This method is called once per behavior.
+        GeneratedClass.__init__(self)
+        self.errImportMQTTLibrary = "Impossibile accedere alla libreria MQTT"
+        self.errBrokerConnection = "Impossibile connettersi al broker"
+        self.errTimeout = "Stato dispositivo RPM non pervenuto"
+
+    def onLoad(self):
+        #~ puts code for box initialization here
+        # This method is called when the box flow diagram is loading.
+        # It is necessarily called after the __init__ method of all the boxes of the current behavior.
+        # When a flow diagram is loading, this method is called on each box of current level before any IO can be stimulated.
+        self.timeout = self.getParameter("Timeout")            # timeout for receiving the message
+        self.topic = self.getParameter("Topic")                # Topic to receive messages
+        self.msgnum = self.getParameter("NumeroMessaggi")      # Number of messages to receive
+
+    def setParameter(self, parameterName, newValue):
+        # The callback for when the parameter "Topic" is changed
+        if(parameterName == "Topic"):              # "Topic" is changed
+            self.logger.info(newValue)
+            self.topic = newValue                  # new value for "Topic"
+        self.logger.info("setParameter STOP")
+
+    def on_connect(self, client, userdata, flags, rc):
+        # The callback for when the client receives a CONNACK response from the server
+        self.logger.info ("Connected with result code "+str(rc))
+
+    def on_message(self, client, userdata, msg):
+        # The callback for when a PUBLISH message is received from the server.
+        self.msgnum -= 1                # Decrease the number of messages to receive
+
+        self.Dato(int(json.loads(str(msg.payload))["breathrate"]))
+
+        self.timer.stop()               # Stops the current timer
+        self.timer.start(False)         # Restarts the timer (for another message)
+
+        if (self.msgnum == 0):          # All requested messages have been received
+            self.onInput_onStop()       # The block is completed
+
+    def onTimer(self):
+        # Timer callback - Timer box taken as a reference
+        self.timer.stop()              # Stop the timer
+        self.Errore(self.errTimeout)   # Timeout error
+        self.client.loop_stop()        # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()      # disconnects from the broker
+
+    def startTimer(self):
+        # The timer starts after self.timeout seconds - Timer box taken as a reference
+        import qi                                 # Import the qi framework
+        self.timer = qi.PeriodicTask()            # timer is an object to execute an operation periodically and asynchronously
+        self.timer.setCallback(self.onTimer)      # set the callback used by the periodictask
+        self.timer.setUsPeriod(self.timeout * 1000 * 1000)    # Set the call interval in microseconds.
+        self.timer.start(False)                   # True: immediate callback ; False: after first period
+
+    def onInput_onStart(self):
+        # This method is called when the onStart input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        try:
+            # The package that implements MQTT in Python is paho-mqtt
+            # The package has 3 modules: client, publish, subscribe
+            # publish and subscribe provide support functions to allow publication and subscription of messages in a one-shot manner
+            # The client module provides the Client class to manage the connection with the broker, sending and receiving messages.
+            import paho.mqtt.client as mqtt
+        except:
+            self.Errore(self.errImportMQTTLibrary)
+
+        # The NAOqi executable which runs on the robot is a broker. When it starts, it loads some libraries.
+        # Each library contains one or more modules (tipically a class) that use the broker to advertise their methods.
+        # ALMemory is the module to access to the shared memory of the robot called AlMemory.
+        # ALMemory is a centralized memory used to store all key information related to the hardware configuration of your robot.
+        # ALMemory provides information about the current state of the Actuators and the Sensors.
+        # ALMemory can also be used to store and retrieve named values, and act as a hub for the distribution of event
+        # The "session" object allows you to connect to the robot functions using the "service" method
+        # The service method takes the name of the service to which you intend to connect (ALMemory) and returns a proxy to connect to it
+        # memory is a proxy, in practice an object, that through the getData method, accesses a previously defined variable
+        memory = self.session().service("ALMemory")
+        url = memory.getData("Pepper/mqtt/hostname")
+        pwd = memory.getData("Pepper/mqtt/password")
+        port = int(memory.getData("Pepper/mqtt/port"))
+        usn = memory.getData("Pepper/mqtt/username")
+
+        #Topic to subscribe to receive the status of rpm
+        self.topic_BREATH = self.topic + '/BREATH_ANNOTATION'
+        self.logger.info ("BREATH: " + self.topic_BREATH)
+
+        self.client = mqtt.Client()    # self.client is the object instance of the Client class
+        if usn and pwd:                                 # If username and password are set
+            self.client.username_pw_set(usn,pwd)        # then they are associated with the "client" object
+
+        self.client.on_connect = self.on_connect        # binds the connection to callback function "on_connect"
+
+        self.client.on_message = self.on_message        # binds the receipt of a message to the callback function "on_message"
+
+        try:
+            # connects to the broker (IP, port, keepalive)
+            # keepalive:  maximum period in seconds allowed between communications with the broker.
+            #  If no other messages are being exchanged,the client will send ping messages to the broker
+            self.client.connect(url, port, 60)
+        except:
+            self.Errore(self.errBrokerConnection)
+
+        self.startTimer()                               # start the timer
+        self.client.subscribe (self.topic_BREATH)          # Subscribe to the topic to receive the message
+
+        # Callbacks are dependent on the client loop as without the loop the callbacks aren’t triggered.
+        self.client.loop_forever()
+
+
+    def onInput_onStop(self):
+        # This method is called when the onStop input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        self.timer.stop()                  # stop the timer
+        self.client.loop_stop()            # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()          # Disconnects from the broker
+        self.msgnum = self.getParameter("NumeroMessaggi")      # Reset number of messages to receive
+        self.onStopped()                   # Stimulates the onStopped output of the box
+
+    def onUnload(self):
+        #put clean-up code here
+        try:
+            self.client.disconnect ()          # Disconnects from the broker
+        except:
+            pass]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" /><Output name="Errore" type="3" type_size="1" nature="1" inner="0" tooltip="" id="5" /><Output name="Dato" type="2" type_size="1" nature="2" inner="0" tooltip="" id="6" /><Parameter name="Topic" inherits_from_parent="0" content_type="3" value="unisadiem/dmcs/sensor" default_value="" custom_choice="0" tooltip="" id="7" /><Parameter name="NumeroMessaggi" inherits_from_parent="0" content_type="1" value="0" default_value="0" min="0" max="100" tooltip="" id="8" /><Parameter name="Timeout" inherits_from_parent="0" content_type="1" value="60" default_value="60" min="1" max="100" tooltip="" id="9" /></Box><Box name="Batteria" id="4" localization="8" tooltip="Tenta di collegarsi al topic formato da ciò che è contenuto nel parametro [Topic] + &apos;BATTERY_INFO&apos;&#x0A;Se per il tempo in secondi specificato dal parametro [Timeout] non vengono ricevuti messaggi l&apos;esecuzione del blocco si interrompe&#x0A;Il numero di pacchetti che può ricevere è specificato dal parametro [NumeroMessaggi] (0 = infiniti messaggi)&#x0A;Una volta ricevuto il pacchetto contenente i valori associati alla Percentuale Batteria ne estrapola il valore. Questo valore viene fornito in output attraverso la porta [Dato]" x="979" y="329"><bitmap>media/images/box/sensors/power.png</bitmap><script language="4"><content><![CDATA[import json
+class MyClass(GeneratedClass):
+
+    def __init__(self):
+        # initialize method
+        # "__init__" is a constructor. It is called when an object is created from a class
+        # "self"  is used to represent the instance of a class.
+        # By using the "self" keyword we access the attributes and methods of the class
+        # When the behavior starts to play, the initialize method is executed first
+        # It is a function which resets the basic box parameters that are common to all the boxes in Choregraphe.
+        # After that, the box is a “module” running in NAOqi, on the robot.
+        # The box has also initialized all its “parameters” so they are now available in the script.
+        # This method is called once per behavior.
+        GeneratedClass.__init__(self)
+        self.errImportMQTTLibrary = "Impossibile accedere alla libreria MQTT"
+        self.errBrokerConnection = "Impossibile connettersi al broker"
+        self.errTimeout = "Stato dispositivo RPM non pervenuto"
+
+    def onLoad(self):
+        #~ puts code for box initialization here
+        # This method is called when the box flow diagram is loading.
+        # It is necessarily called after the __init__ method of all the boxes of the current behavior.
+        # When a flow diagram is loading, this method is called on each box of current level before any IO can be stimulated.
+        self.timeout = self.getParameter("Timeout")            # timeout for receiving the message
+        self.topic = self.getParameter("Topic")                # Topic to receive messages
+        self.msgnum = self.getParameter("NumeroMessaggi")      # Number of messages to receive
+
+    def setParameter(self, parameterName, newValue):
+        # The callback for when the parameter "Topic" is changed
+        if(parameterName == "Topic"):              # "Topic" is changed
+            self.logger.info(newValue)
+            self.topic = newValue                  # new value for "Topic"
+        self.logger.info("setParameter STOP")
+
+    def on_connect(self, client, userdata, flags, rc):
+        # The callback for when the client receives a CONNACK response from the server
+        self.logger.info ("Connected with result code "+str(rc))
+
+    def on_message(self, client, userdata, msg):
+        # The callback for when a PUBLISH message is received from the server.
+        self.msgnum -= 1                # Decrease the number of messages to receive
+
+        self.Dato(int(json.loads(str(msg.payload))["state of charge"]))
+
+        self.timer.stop()               # Stops the current timer
+        self.timer.start(False)         # Restarts the timer (for another message)
+
+        if (self.msgnum == 0):          # All requested messages have been received
+            self.onInput_onStop()       # The block is completed
+
+    def onTimer(self):
+        # Timer callback - Timer box taken as a reference
+        self.timer.stop()              # Stop the timer
+        self.Errore(self.errTimeout)   # Timeout error
+        self.client.loop_stop()        # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()      # disconnects from the broker
+
+    def startTimer(self):
+        # The timer starts after self.timeout seconds - Timer box taken as a reference
+        import qi                                 # Import the qi framework
+        self.timer = qi.PeriodicTask()            # timer is an object to execute an operation periodically and asynchronously
+        self.timer.setCallback(self.onTimer)      # set the callback used by the periodictask
+        self.timer.setUsPeriod(self.timeout * 1000 * 1000)    # Set the call interval in microseconds.
+        self.timer.start(False)                   # True: immediate callback ; False: after first period
+
+    def onInput_onStart(self):
+        # This method is called when the onStart input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        try:
+            # The package that implements MQTT in Python is paho-mqtt
+            # The package has 3 modules: client, publish, subscribe
+            # publish and subscribe provide support functions to allow publication and subscription of messages in a one-shot manner
+            # The client module provides the Client class to manage the connection with the broker, sending and receiving messages.
+            import paho.mqtt.client as mqtt
+        except:
+            self.Errore(self.errImportMQTTLibrary)
+
+        # The NAOqi executable which runs on the robot is a broker. When it starts, it loads some libraries.
+        # Each library contains one or more modules (tipically a class) that use the broker to advertise their methods.
+        # ALMemory is the module to access to the shared memory of the robot called AlMemory.
+        # ALMemory is a centralized memory used to store all key information related to the hardware configuration of your robot.
+        # ALMemory provides information about the current state of the Actuators and the Sensors.
+        # ALMemory can also be used to store and retrieve named values, and act as a hub for the distribution of event
+        # The "session" object allows you to connect to the robot functions using the "service" method
+        # The service method takes the name of the service to which you intend to connect (ALMemory) and returns a proxy to connect to it
+        # memory is a proxy, in practice an object, that through the getData method, accesses a previously defined variable
+        memory = self.session().service("ALMemory")
+        url = memory.getData("Pepper/mqtt/hostname")
+        pwd = memory.getData("Pepper/mqtt/password")
+        port = int(memory.getData("Pepper/mqtt/port"))
+        usn = memory.getData("Pepper/mqtt/username")
+
+        #Topic to subscribe to receive the status of rpm
+        self.topic_BATTERY = self.topic + '/BATTERY_INFO'
+        self.logger.info ("BREATH: " + self.topic_BATTERY)
+
+        self.client = mqtt.Client()    # self.client is the object instance of the Client class
+        if usn and pwd:                                 # If username and password are set
+            self.client.username_pw_set(usn,pwd)        # then they are associated with the "client" object
+
+        self.client.on_connect = self.on_connect        # binds the connection to callback function "on_connect"
+
+        self.client.on_message = self.on_message        # binds the receipt of a message to the callback function "on_message"
+
+        try:
+            # connects to the broker (IP, port, keepalive)
+            # keepalive:  maximum period in seconds allowed between communications with the broker.
+            #  If no other messages are being exchanged,the client will send ping messages to the broker
+            self.client.connect(url, port, 60)
+        except:
+            self.Errore(self.errBrokerConnection)
+
+        self.startTimer()                               # start the timer
+        self.client.subscribe (self.topic_BATTERY)          # Subscribe to the topic to receive the message
+
+        # Callbacks are dependent on the client loop as without the loop the callbacks aren’t triggered.
+        self.client.loop_forever()
+
+
+    def onInput_onStop(self):
+        # This method is called when the onStop input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        self.timer.stop()                  # stop the timer
+        self.client.loop_stop()            # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()          # Disconnects from the broker
+        self.msgnum = self.getParameter("NumeroMessaggi")      # Reset number of messages to receive
+        self.onStopped()                   # Stimulates the onStopped output of the box
+
+    def onUnload(self):
+        #put clean-up code here
+        try:
+            self.client.disconnect ()          # Disconnects from the broker
+        except:
+            pass]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" /><Output name="Errore" type="3" type_size="1" nature="1" inner="0" tooltip="" id="5" /><Output name="Dato" type="2" type_size="1" nature="2" inner="0" tooltip="" id="6" /><Parameter name="Topic" inherits_from_parent="0" content_type="3" value="unisadiem/dmcs/sensor" default_value="" custom_choice="0" tooltip="" id="7" /><Parameter name="NumeroMessaggi" inherits_from_parent="0" content_type="1" value="4" default_value="0" min="0" max="100" tooltip="" id="8" /><Parameter name="Timeout" inherits_from_parent="0" content_type="1" value="60" default_value="60" min="1" max="100" tooltip="" id="9" /></Box><Box name="Batteria - Comandi" id="8" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="852" y="541"><bitmap>media/images/box/box-script.png</bitmap><script language="4"><content><![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("-attiva controllo batteria\n-termina controllo batteria")]]></content></script><pluginContent><text><![CDATA[-attiva controllo batteria
+-termina controllo batteria]]></text></pluginContent><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" /></Box><Box name="ElettroCardioGramma" id="10" localization="8" tooltip="Tenta di collegarsi al topic formato da ciò che è contenuto nel parametro [Topic] + &apos;ECG&apos;&#x0A;Se per il tempo in secondi specificato dal parametro [Timeout] non vengono ricevuti messaggi l&apos;esecuzione del blocco si interrompe&#x0A;Il numero di pacchetti che può ricevere è specificato dal parametro [NumeroMessaggi] (0 = infiniti messaggi)&#x0A;Una volta ricevuto il pacchetto contenente i valori associati all&apos;ElettroCardioGramma ne estrapola la lista di valori e lo stato (0 = disconnesso, 1 = connesso con R2R stabile, 2 = connesso con R2R instabile). Questi valori vengono forniti in output rispettivamente attraverso le porte [Dato] e [Stato]" x="605" y="326"><bitmap>media/images/box/sensors/STM.png</bitmap><script language="4"><content><![CDATA[import json
+class MyClass(GeneratedClass):
+
+    def __init__(self):
+        # initialize method
+        # "__init__" is a constructor. It is called when an object is created from a class
+        # "self"  is used to represent the instance of a class.
+        # By using the "self" keyword we access the attributes and methods of the class
+        # When the behavior starts to play, the initialize method is executed first
+        # It is a function which resets the basic box parameters that are common to all the boxes in Choregraphe.
+        # After that, the box is a “module” running in NAOqi, on the robot.
+        # The box has also initialized all its “parameters” so they are now available in the script.
+        # This method is called once per behavior.
+        GeneratedClass.__init__(self)
+        self.errImportMQTTLibrary = "Impossibile accedere alla libreria MQTT"
+        self.errBrokerConnection = "Impossibile connettersi al broker"
+        self.errTimeout = "Stato dispositivo ECG non pervenuto"
+
+    def onLoad(self):
+        #~ puts code for box initialization here
+        # This method is called when the box flow diagram is loading.
+        # It is necessarily called after the __init__ method of all the boxes of the current behavior.
+        # When a flow diagram is loading, this method is called on each box of current level before any IO can be stimulated.
+        self.timeout = self.getParameter("Timeout")            # timeout for receiving the message
+        self.topic = self.getParameter("Topic")                # Topic to receive messages
+        self.msgnum = self.getParameter("NumeroMessaggi")      # Number of messages to receive
+
+    def setParameter(self, parameterName, newValue):
+        # The callback for when the parameter "Topic" is changed
+        if(parameterName == "Topic"):              # "Topic" is changed
+            self.logger.info(newValue)
+            self.topic = newValue                  # new value for "Topic"
+        self.logger.info("setParameter STOP")
+
+    def on_connect(self, client, userdata, flags, rc):
+        # The callback for when the client receives a CONNACK response from the server
+        self.logger.info ("Connected with result code "+str(rc))
+
+    def on_message(self, client, userdata, msg):
+        # The callback for when a PUBLISH message is received from the server.
+        self.msgnum -= 1                # Decrease the number of messages to receive
+
+        self.Dato(list(json.loads(str(msg.payload))["samples"]))
+        self.Stato(int(json.loads(str(msg.payload))["status"]))
+
+        self.timer.stop()               # Stops the current timer
+        self.timer.start(False)         # Restarts the timer (for another message)
+
+        if (self.msgnum == 0):          # All requested messages have been received
+            self.onInput_onStop()       # The block is completed
+
+    def onTimer(self):
+        # Timer callback - Timer box taken as a reference
+        self.timer.stop()              # Stop the timer
+        self.Errore(self.errTimeout)   # Timeout error
+        self.client.loop_stop()        # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()      # disconnects from the broker
+
+    def startTimer(self):
+        # The timer starts after self.timeout seconds - Timer box taken as a reference
+        import qi                                 # Import the qi framework
+        self.timer = qi.PeriodicTask()            # timer is an object to execute an operation periodically and asynchronously
+        self.timer.setCallback(self.onTimer)      # set the callback used by the periodictask
+        self.timer.setUsPeriod(self.timeout * 1000 * 1000)    # Set the call interval in microseconds.
+        self.timer.start(False)                   # True: immediate callback ; False: after first period
+
+    def onInput_onStart(self):
+        # This method is called when the onStart input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        try:
+            # The package that implements MQTT in Python is paho-mqtt
+            # The package has 3 modules: client, publish, subscribe
+            # publish and subscribe provide support functions to allow publication and subscription of messages in a one-shot manner
+            # The client module provides the Client class to manage the connection with the broker, sending and receiving messages.
+            import paho.mqtt.client as mqtt
+        except:
+            self.Errore(self.errImportMQTTLibrary)
+
+        # The NAOqi executable which runs on the robot is a broker. When it starts, it loads some libraries.
+        # Each library contains one or more modules (tipically a class) that use the broker to advertise their methods.
+        # ALMemory is the module to access to the shared memory of the robot called AlMemory.
+        # ALMemory is a centralized memory used to store all key information related to the hardware configuration of your robot.
+        # ALMemory provides information about the current state of the Actuators and the Sensors.
+        # ALMemory can also be used to store and retrieve named values, and act as a hub for the distribution of event
+        # The "session" object allows you to connect to the robot functions using the "service" method
+        # The service method takes the name of the service to which you intend to connect (ALMemory) and returns a proxy to connect to it
+        # memory is a proxy, in practice an object, that through the getData method, accesses a previously defined variable
+        memory = self.session().service("ALMemory")
+        url = memory.getData("Pepper/mqtt/hostname")
+        pwd = memory.getData("Pepper/mqtt/password")
+        port = int(memory.getData("Pepper/mqtt/port"))
+        usn = memory.getData("Pepper/mqtt/username")
+
+        #Topic to subscribe to receive the status of ecg
+        self.topic_ECG = self.topic + '/ECG'
+        self.logger.info ("ECG: " + self.topic_ECG)
+
+        self.client = mqtt.Client()    # self.client is the object instance of the Client class
+        if usn and pwd:                                 # If username and password are set
+            self.client.username_pw_set(usn,pwd)        # then they are associated with the "client" object
+
+        self.client.on_connect = self.on_connect        # binds the connection to callback function "on_connect"
+
+        self.client.on_message = self.on_message        # binds the receipt of a message to the callback function "on_message"
+
+        try:
+            # connects to the broker (IP, port, keepalive)
+            # keepalive:  maximum period in seconds allowed between communications with the broker.
+            #  If no other messages are being exchanged,the client will send ping messages to the broker
+            self.client.connect(url, port, 60)
+        except:
+            self.Errore(self.errBrokerConnection)
+
+        self.startTimer()                               # start the timer
+        self.client.subscribe (self.topic_ECG)          # Subscribe to the topic to receive the message
+
+        # Callbacks are dependent on the client loop as without the loop the callbacks aren’t triggered.
+        self.client.loop_forever()
+
+
+    def onInput_onStop(self):
+        # This method is called when the onStop input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        self.timer.stop()                  # stop the timer
+        self.client.loop_stop()            # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()          # Disconnects from the broker
+        self.msgnum = self.getParameter("NumeroMessaggi")      # Reset number of messages to receive
+        self.onStopped()                   # Stimulates the onStopped output of the box
+
+    def onUnload(self):
+        #put clean-up code here
+        try:
+            self.client.disconnect ()          # Disconnects from the broker
+        except:
+            pass]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" /><Output name="Errore" type="3" type_size="1" nature="1" inner="0" tooltip="" id="5" /><Output name="Dato" type="2" type_size="1" nature="2" inner="0" tooltip="" id="6" /><Output name="Stato" type="2" type_size="1" nature="2" inner="0" tooltip="" id="7" /><Parameter name="Topic" inherits_from_parent="0" content_type="3" value="unisadiem/dmcs/sensor" default_value="" custom_choice="0" tooltip="" id="8" /><Parameter name="NumeroMessaggi" inherits_from_parent="0" content_type="1" value="0" default_value="0" min="0" max="100" tooltip="" id="9" /><Parameter name="Timeout" inherits_from_parent="0" content_type="1" value="60" default_value="60" min="1" max="100" tooltip="" id="10" /></Box><Box name="ElettroCardioGramma - Comandi" id="11" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="575" y="540"><bitmap>media/images/box/box-script.png</bitmap><script language="4"><content><![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("-attiva controllo ecg\n-termina controllo ecg")]]></content></script><pluginContent><text><![CDATA[-attiva controllo ecg
+-termina controllo ecg]]></text></pluginContent><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" /></Box><Box name="WebApp - Battiti" id="12" localization="8" tooltip="Se il parametro [IndirizzoIP] non è vuoto mostra la pagina web &apos;bpm&apos; utilizzando tale indirizzo.&#x0A;Se il parametro [IndirizzoIP] è vuoto tenta di collegarsi al topic formato da ciò che è contenuto nel parametro [Topic] + &apos;EXTRA/IP&apos;&#x0A;Se per il tempo in secondi specificato dal parametro [Timeout] non vengono ricevuti messaggi l&apos;esecuzione del blocco si interrompe&#x0A;Una volta ricevuto il pacchetto contenente l&apos;indirizzo IP ne estrapola il valore e mostra la pagina web &apos;bpm&apos; utilizzando tale indirizzo&#x0A;È possibile inviare alla pagina web un Nome ed un Messaggio o Allarme attraverso l&apos;utilizzo degli appositi blocchi" x="155" y="430"><bitmap>media/images/box/internet/internet.png</bitmap><script language="4"><content><![CDATA[class MyClass(GeneratedClass):
+
+    def __init__(self):
+        GeneratedClass.__init__(self)
+        self.errImportMQTTLibrary = "Impossibile accedere alla libreria MQTT"
+        self.errBrokerConnection = "Impossibile connettersi al broker"
+        self.errTimeout = "Stato dispositivo IP non pervenuto"
+
+    def load_url(self, ip):
+        tabletService = self._getTabletService()
+        if tabletService:
+            tabletService.showWebview("http://" + ip + ":5000/bpm")
+        else:
+            self.logger.warning("ALTabletService not found.")
+        self.onStopped()
+
+    def onLoad(self):
+        self.timeout = self.getParameter("Timeout")            # timeout for receiving the message
+        self.topic = self.getParameter("Topic")                # Topic to receive messages
+        self.manualIP = self.getParameter("IndirizzoIP")       # IndirizzoIP to connect to webpage
+
+    def setParameter(self, parameterName, newValue):
+        # The callback for when the parameter "Topic" is changed
+        if(parameterName == "Topic"):              # "Topic" is changed
+            self.logger.info(newValue)
+            self.topic = newValue                  # new value for "Topic"
+        if(parameterName == "IndirizzoIP"):        # "IndirizzoIP" is changed
+            self.logger.info(newValue)
+            self.manualIP = newValue               # new value for "IndirizzoIP"
+        self.logger.info("setParameter STOP")
+
+    def on_connect(self, client, userdata, flags, rc):
+        # The callback for when the client receives a CONNACK response from the server
+        self.logger.info ("Connected with result code "+str(rc))
+
+    def onUnload(self):
+        pass
+
+    def _getTabletService(self):
+        tabletService = None
+        try:
+            tabletService = self.session().service("ALTabletService")
+        except Exception as e:
+            self.logger.error(e)
+        return tabletService
+
+    def on_message(self, client, userdata, msg):
+        # We create TabletService here in order to avoid
+        # problems with connections and disconnections of the tablet during the life of the application
+        self.IP = str(msg.payload)
+
+        if self.IP != self.manualIP:
+            self.load_url(self.IP)
+            self.manualIP = self.IP
+
+        self.timer.stop()               # Stops the current timer
+        self.timer.start(False)         # Restarts the timer (for another message)
+
+
+    def onTimer(self):
+        # Timer callback - Timer box taken as a reference
+        self.timer.stop()              # Stop the timer
+        self.Errore(self.errTimeout)   # Timeout error
+        self.client.loop_stop()        # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()      # disconnects from the broker
+
+    def startTimer(self):
+        # The timer starts after self.timeout seconds - Timer box taken as a reference
+        import qi                                 # Import the qi framework
+        self.timer = qi.PeriodicTask()            # timer is an object to execute an operation periodically and asynchronously
+        self.timer.setCallback(self.onTimer)      # set the callback used by the periodictask
+        self.timer.setUsPeriod(self.timeout * 1000 * 1000)    # Set the call interval in microseconds.
+        self.timer.start(False)                   # True: immediate callback ; False: after first period
+
+    def onInput_onStart(self):
+        if self.manualIP != '':
+            self.load_url(self.manualIP)
+        else:
+            # This method is called when the onStart input port is stimulated
+            # Methods corresponding to the inputs of the box need to be defined in the script
+            # with the following syntax: onInput_<input-name>.
+            try:
+                # The package that implements MQTT in Python is paho-mqtt
+                # The package has 3 modules: client, publish, subscribe
+                # publish and subscribe provide support functions to allow publication and subscription of messages in a one-shot manner
+                # The client module provides the Client class to manage the connection with the broker, sending and receiving messages.
+                import paho.mqtt.client as mqtt
+            except:
+                self.Errore(self.errImportMQTTLibrary)
+
+            # The NAOqi executable which runs on the robot is a broker. When it starts, it loads some libraries.
+            # Each library contains one or more modules (tipically a class) that use the broker to advertise their methods.
+            # ALMemory is the module to access to the shared memory of the robot called AlMemory.
+            # ALMemory is a centralized memory used to store all key information related to the hardware configuration of your robot.
+            # ALMemory provides information about the current state of the Actuators and the Sensors.
+            # ALMemory can also be used to store and retrieve named values, and act as a hub for the distribution of event
+            # The "session" object allows you to connect to the robot functions using the "service" method
+            # The service method takes the name of the service to which you intend to connect (ALMemory) and returns a proxy to connect to it
+            # memory is a proxy, in practice an object, that through the getData method, accesses a previously defined variable
+            memory = self.session().service("ALMemory")
+            url = memory.getData("Pepper/mqtt/hostname")
+            pwd = memory.getData("Pepper/mqtt/password")
+            port = int(memory.getData("Pepper/mqtt/port"))
+            usn = memory.getData("Pepper/mqtt/username")
+
+            #Topic to subscribe to receive the IP
+            self.topic_IP = self.topic + '/EXTRA/IP'
+            self.logger.info ("IP: " + self.topic_IP)
+
+            self.client = mqtt.Client()    # self.client is the object instance of the Client class
+            if usn and pwd:                                 # If username and password are set
+                self.client.username_pw_set(usn,pwd)        # then they are associated with the "client" object
+
+            self.client.on_connect = self.on_connect        # binds the connection to callback function "on_connect"
+
+            self.client.on_message = self.on_message        # binds the receipt of a message to the callback function "on_message"
+
+            try:
+                # connects to the broker (IP, port, keepalive)
+                # keepalive:  maximum period in seconds allowed between communications with the broker.
+                #  If no other messages are being exchanged,the client will send ping messages to the broker
+                self.client.connect(url, port, 60)
+            except:
+                self.Errore(self.errBrokerConnection)
+
+            self.startTimer()                               # start the timer
+            self.client.subscribe (self.topic_IP)           # Subscribe to the topic to receive the message
+
+            # Callbacks are dependent on the client loop as without the loop the callbacks aren’t triggered.
+            self.client.loop_forever()
+
+    def onInput_onStop(self):
+        # We create TabletService here in order to avoid
+        # problems with connections and disconnections of the tablet during the life of the application
+        tabletService = self._getTabletService()
+        if tabletService:
+            tabletService.hideWebview()
+        else:
+            self.logger.warning("ALTabletService not found.")
+        self.onStopped()]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="" id="3" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" /><Parameter name="Topic" inherits_from_parent="0" content_type="3" value="unisadiem/dmcs/sensor" default_value="unisadiem/dmcs/sensor" custom_choice="0" tooltip="" id="5" /><Parameter name="Timeout" inherits_from_parent="0" content_type="1" value="60" default_value="60" min="1" max="100" tooltip="" id="6" /><Parameter name="IndirizzoIP" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="7" /></Box><Box name="WebApp - Respirazioni" id="13" localization="8" tooltip="Se il parametro [IndirizzoIP] non è vuoto mostra la pagina web &apos;rpm&apos; utilizzando tale indirizzo.&#x0A;Se il parametro [IndirizzoIP] è vuoto tenta di collegarsi al topic formato da ciò che è contenuto nel parametro [Topic] + &apos;EXTRA/IP&apos;&#x0A;Se per il tempo in secondi specificato dal parametro [Timeout] non vengono ricevuti messaggi l&apos;esecuzione del blocco si interrompe&#x0A;Una volta ricevuto il pacchetto contenente l&apos;indirizzo IP ne estrapola il valore e mostra la pagina web &apos;rpm&apos; utilizzando tale indirizzo&#x0A;È possibile inviare alla pagina web un Nome ed un Messaggio o Allarme attraverso l&apos;utilizzo degli appositi blocchi" x="398" y="433"><bitmap>media/images/box/internet/internet.png</bitmap><script language="4"><content><![CDATA[class MyClass(GeneratedClass):
+
+    def __init__(self):
+        GeneratedClass.__init__(self)
+        self.errImportMQTTLibrary = "Impossibile accedere alla libreria MQTT"
+        self.errBrokerConnection = "Impossibile connettersi al broker"
+        self.errTimeout = "Stato dispositivo IP non pervenuto"
+
+    def load_url(self, ip):
+        tabletService = self._getTabletService()
+        if tabletService:
+            tabletService.showWebview("http://" + ip + ":5000/rpm")
+        else:
+            self.logger.warning("ALTabletService not found.")
+        self.onStopped()
+
+    def onLoad(self):
+        self.timeout = self.getParameter("Timeout")            # timeout for receiving the message
+        self.topic = self.getParameter("Topic")                # Topic to receive messages
+        self.manualIP = self.getParameter("IndirizzoIP")       # IndirizzoIP to connect to webpage
+
+    def setParameter(self, parameterName, newValue):
+        # The callback for when the parameter "Topic" is changed
+        if(parameterName == "Topic"):              # "Topic" is changed
+            self.logger.info(newValue)
+            self.topic = newValue                  # new value for "Topic"
+        if(parameterName == "IndirizzoIP"):        # "IndirizzoIP" is changed
+            self.logger.info(newValue)
+            self.manualIP = newValue               # new value for "IndirizzoIP"
+        self.logger.info("setParameter STOP")
+
+    def on_connect(self, client, userdata, flags, rc):
+        # The callback for when the client receives a CONNACK response from the server
+        self.logger.info ("Connected with result code "+str(rc))
+
+    def onUnload(self):
+        pass
+
+    def _getTabletService(self):
+        tabletService = None
+        try:
+            tabletService = self.session().service("ALTabletService")
+        except Exception as e:
+            self.logger.error(e)
+        return tabletService
+
+    def on_message(self, client, userdata, msg):
+        # We create TabletService here in order to avoid
+        # problems with connections and disconnections of the tablet during the life of the application
+        self.IP = str(msg.payload)
+
+        if self.IP != self.manualIP:
+            self.load_url(self.IP)
+            self.manualIP = self.IP
+
+        self.timer.stop()               # Stops the current timer
+        self.timer.start(False)         # Restarts the timer (for another message)
+
+
+    def onTimer(self):
+        # Timer callback - Timer box taken as a reference
+        self.timer.stop()              # Stop the timer
+        self.Errore(self.errTimeout)   # Timeout error
+        self.client.loop_stop()        # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()      # disconnects from the broker
+
+    def startTimer(self):
+        # The timer starts after self.timeout seconds - Timer box taken as a reference
+        import qi                                 # Import the qi framework
+        self.timer = qi.PeriodicTask()            # timer is an object to execute an operation periodically and asynchronously
+        self.timer.setCallback(self.onTimer)      # set the callback used by the periodictask
+        self.timer.setUsPeriod(self.timeout * 1000 * 1000)    # Set the call interval in microseconds.
+        self.timer.start(False)                   # True: immediate callback ; False: after first period
+
+    def onInput_onStart(self):
+        if self.manualIP != '':
+            self.load_url(self.manualIP)
+        else:
+            # This method is called when the onStart input port is stimulated
+            # Methods corresponding to the inputs of the box need to be defined in the script
+            # with the following syntax: onInput_<input-name>.
+            try:
+                # The package that implements MQTT in Python is paho-mqtt
+                # The package has 3 modules: client, publish, subscribe
+                # publish and subscribe provide support functions to allow publication and subscription of messages in a one-shot manner
+                # The client module provides the Client class to manage the connection with the broker, sending and receiving messages.
+                import paho.mqtt.client as mqtt
+            except:
+                self.Errore(self.errImportMQTTLibrary)
+
+            # The NAOqi executable which runs on the robot is a broker. When it starts, it loads some libraries.
+            # Each library contains one or more modules (tipically a class) that use the broker to advertise their methods.
+            # ALMemory is the module to access to the shared memory of the robot called AlMemory.
+            # ALMemory is a centralized memory used to store all key information related to the hardware configuration of your robot.
+            # ALMemory provides information about the current state of the Actuators and the Sensors.
+            # ALMemory can also be used to store and retrieve named values, and act as a hub for the distribution of event
+            # The "session" object allows you to connect to the robot functions using the "service" method
+            # The service method takes the name of the service to which you intend to connect (ALMemory) and returns a proxy to connect to it
+            # memory is a proxy, in practice an object, that through the getData method, accesses a previously defined variable
+            memory = self.session().service("ALMemory")
+            url = memory.getData("Pepper/mqtt/hostname")
+            pwd = memory.getData("Pepper/mqtt/password")
+            port = int(memory.getData("Pepper/mqtt/port"))
+            usn = memory.getData("Pepper/mqtt/username")
+
+            #Topic to subscribe to receive the IP
+            self.topic_IP = self.topic + '/EXTRA/IP'
+            self.logger.info ("IP: " + self.topic_IP)
+
+            self.client = mqtt.Client()    # self.client is the object instance of the Client class
+            if usn and pwd:                                 # If username and password are set
+                self.client.username_pw_set(usn,pwd)        # then they are associated with the "client" object
+
+            self.client.on_connect = self.on_connect        # binds the connection to callback function "on_connect"
+
+            self.client.on_message = self.on_message        # binds the receipt of a message to the callback function "on_message"
+
+            try:
+                # connects to the broker (IP, port, keepalive)
+                # keepalive:  maximum period in seconds allowed between communications with the broker.
+                #  If no other messages are being exchanged,the client will send ping messages to the broker
+                self.client.connect(url, port, 60)
+            except:
+                self.Errore(self.errBrokerConnection)
+
+            self.startTimer()                               # start the timer
+            self.client.subscribe (self.topic_IP)           # Subscribe to the topic to receive the message
+
+            # Callbacks are dependent on the client loop as without the loop the callbacks aren’t triggered.
+            self.client.loop_forever()
+
+    def onInput_onStop(self):
+        # We create TabletService here in order to avoid
+        # problems with connections and disconnections of the tablet during the life of the application
+        tabletService = self._getTabletService()
+        if tabletService:
+            tabletService.hideWebview()
+        else:
+            self.logger.warning("ALTabletService not found.")
+        self.onStopped()]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="" id="3" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" /><Parameter name="Topic" inherits_from_parent="0" content_type="3" value="unisadiem/dmcs/sensor" default_value="unisadiem/dmcs/sensor" custom_choice="0" tooltip="" id="5" /><Parameter name="Timeout" inherits_from_parent="0" content_type="1" value="60" default_value="60" min="1" max="100" tooltip="" id="6" /><Parameter name="IndirizzoIP" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="7" /></Box><Box name="WebApp - ElettroCardioGramma" id="14" localization="8" tooltip="Se il parametro [IndirizzoIP] non è vuoto mostra la pagina web &apos;ecg&apos; utilizzando tale indirizzo.&#x0A;Se il parametro [IndirizzoIP] è vuoto tenta di collegarsi al topic formato da ciò che è contenuto nel parametro [Topic] + &apos;EXTRA/IP&apos;&#x0A;Se per il tempo in secondi specificato dal parametro [Timeout] non vengono ricevuti messaggi l&apos;esecuzione del blocco si interrompe&#x0A;Una volta ricevuto il pacchetto contenente l&apos;indirizzo IP ne estrapola il valore e mostra la pagina web &apos;ecg&apos; utilizzando tale indirizzo&#x0A;È possibile inviare alla pagina web un Nome ed un Messaggio o Allarme attraverso l&apos;utilizzo degli appositi blocchi&#x0A;" x="609" y="429"><bitmap>media/images/box/internet/internet.png</bitmap><script language="4"><content><![CDATA[class MyClass(GeneratedClass):
+
+    def __init__(self):
+        GeneratedClass.__init__(self)
+        self.errImportMQTTLibrary = "Impossibile accedere alla libreria MQTT"
+        self.errBrokerConnection = "Impossibile connettersi al broker"
+        self.errTimeout = "Stato dispositivo IP non pervenuto"
+
+    def load_url(self, ip):
+        tabletService = self._getTabletService()
+        if tabletService:
+            tabletService.showWebview("http://" + ip + ":5000/ecg")
+        else:
+            self.logger.warning("ALTabletService not found.")
+        self.onStopped()
+
+    def onLoad(self):
+        self.timeout = self.getParameter("Timeout")            # timeout for receiving the message
+        self.topic = self.getParameter("Topic")                # Topic to receive messages
+        self.manualIP = self.getParameter("IndirizzoIP")       # IndirizzoIP to connect to webpage
+
+    def setParameter(self, parameterName, newValue):
+        # The callback for when the parameter "Topic" is changed
+        if(parameterName == "Topic"):              # "Topic" is changed
+            self.logger.info(newValue)
+            self.topic = newValue                  # new value for "Topic"
+        if(parameterName == "IndirizzoIP"):        # "IndirizzoIP" is changed
+            self.logger.info(newValue)
+            self.manualIP = newValue               # new value for "IndirizzoIP"
+        self.logger.info("setParameter STOP")
+
+    def on_connect(self, client, userdata, flags, rc):
+        # The callback for when the client receives a CONNACK response from the server
+        self.logger.info ("Connected with result code "+str(rc))
+
+    def onUnload(self):
+        pass
+
+    def _getTabletService(self):
+        tabletService = None
+        try:
+            tabletService = self.session().service("ALTabletService")
+        except Exception as e:
+            self.logger.error(e)
+        return tabletService
+
+    def on_message(self, client, userdata, msg):
+        # We create TabletService here in order to avoid
+        # problems with connections and disconnections of the tablet during the life of the application
+        self.IP = str(msg.payload)
+
+        if self.IP != self.manualIP:
+            self.load_url(self.IP)
+            self.manualIP = self.IP
+
+        self.timer.stop()               # Stops the current timer
+        self.timer.start(False)         # Restarts the timer (for another message)
+
+
+    def onTimer(self):
+        # Timer callback - Timer box taken as a reference
+        self.timer.stop()              # Stop the timer
+        self.Errore(self.errTimeout)   # Timeout error
+        self.client.loop_stop()        # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()      # disconnects from the broker
+
+    def startTimer(self):
+        # The timer starts after self.timeout seconds - Timer box taken as a reference
+        import qi                                 # Import the qi framework
+        self.timer = qi.PeriodicTask()            # timer is an object to execute an operation periodically and asynchronously
+        self.timer.setCallback(self.onTimer)      # set the callback used by the periodictask
+        self.timer.setUsPeriod(self.timeout * 1000 * 1000)    # Set the call interval in microseconds.
+        self.timer.start(False)                   # True: immediate callback ; False: after first period
+
+    def onInput_onStart(self):
+        if self.manualIP != '':
+            self.load_url(self.manualIP)
+        else:
+            # This method is called when the onStart input port is stimulated
+            # Methods corresponding to the inputs of the box need to be defined in the script
+            # with the following syntax: onInput_<input-name>.
+            try:
+                # The package that implements MQTT in Python is paho-mqtt
+                # The package has 3 modules: client, publish, subscribe
+                # publish and subscribe provide support functions to allow publication and subscription of messages in a one-shot manner
+                # The client module provides the Client class to manage the connection with the broker, sending and receiving messages.
+                import paho.mqtt.client as mqtt
+            except:
+                self.Errore(self.errImportMQTTLibrary)
+
+            # The NAOqi executable which runs on the robot is a broker. When it starts, it loads some libraries.
+            # Each library contains one or more modules (tipically a class) that use the broker to advertise their methods.
+            # ALMemory is the module to access to the shared memory of the robot called AlMemory.
+            # ALMemory is a centralized memory used to store all key information related to the hardware configuration of your robot.
+            # ALMemory provides information about the current state of the Actuators and the Sensors.
+            # ALMemory can also be used to store and retrieve named values, and act as a hub for the distribution of event
+            # The "session" object allows you to connect to the robot functions using the "service" method
+            # The service method takes the name of the service to which you intend to connect (ALMemory) and returns a proxy to connect to it
+            # memory is a proxy, in practice an object, that through the getData method, accesses a previously defined variable
+            memory = self.session().service("ALMemory")
+            url = memory.getData("Pepper/mqtt/hostname")
+            pwd = memory.getData("Pepper/mqtt/password")
+            port = int(memory.getData("Pepper/mqtt/port"))
+            usn = memory.getData("Pepper/mqtt/username")
+
+            #Topic to subscribe to receive the IP
+            self.topic_IP = self.topic + '/EXTRA/IP'
+            self.logger.info ("IP: " + self.topic_IP)
+
+            self.client = mqtt.Client()    # self.client is the object instance of the Client class
+            if usn and pwd:                                 # If username and password are set
+                self.client.username_pw_set(usn,pwd)        # then they are associated with the "client" object
+
+            self.client.on_connect = self.on_connect        # binds the connection to callback function "on_connect"
+
+            self.client.on_message = self.on_message        # binds the receipt of a message to the callback function "on_message"
+
+            try:
+                # connects to the broker (IP, port, keepalive)
+                # keepalive:  maximum period in seconds allowed between communications with the broker.
+                #  If no other messages are being exchanged,the client will send ping messages to the broker
+                self.client.connect(url, port, 60)
+            except:
+                self.Errore(self.errBrokerConnection)
+
+            self.startTimer()                               # start the timer
+            self.client.subscribe (self.topic_IP)           # Subscribe to the topic to receive the message
+
+            # Callbacks are dependent on the client loop as without the loop the callbacks aren’t triggered.
+            self.client.loop_forever()
+
+    def onInput_onStop(self):
+        # We create TabletService here in order to avoid
+        # problems with connections and disconnections of the tablet during the life of the application
+        tabletService = self._getTabletService()
+        if tabletService:
+            tabletService.hideWebview()
+        else:
+            self.logger.warning("ALTabletService not found.")
+        self.onStopped()]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="" id="3" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" /><Parameter name="Topic" inherits_from_parent="0" content_type="3" value="unisadiem/dmcs/sensor" default_value="unisadiem/dmcs/sensor" custom_choice="0" tooltip="" id="5" /><Parameter name="Timeout" inherits_from_parent="0" content_type="1" value="60" default_value="60" min="1" max="100" tooltip="" id="6" /><Parameter name="IndirizzoIP" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="7" /></Box><Box name="Delay" id="15" localization="8" tooltip="Wait a moment before triggering the output. &#x0A;Can be stopped anytime. &#x0A;Multiple inputs will trigger multiple outputs." x="205" y="120"><bitmap>media/images/box/wait.png</bitmap><script language="4"><content><![CDATA[class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        self.delayed = []
+
+    def onUnload(self):
+        self.cancelDelays()
+
+    def cancelDelays(self):
+        cancel_list = list(self.delayed)
+        for d in cancel_list:
+            d.cancel()
+
+    def cleanDelay(self, fut, fut_ref):
+        self.delayed.remove(fut)
+
+    def triggerOutput(self):
+        self.timerOutput()
+
+    def onInput_onStart(self):
+        import qi
+        import functools
+        delay_future = qi.async(self.triggerOutput, delay=int(self.getParameter("Timeout (s)") * 1000 * 1000))
+        # keep the async operation in an array for cancel
+        # and remove it when it is finished in the callback
+        self.delayed.append(delay_future)
+        bound_clean = functools.partial(self.cleanDelay, delay_future)
+        delay_future.addCallback(bound_clean)
+
+    def onInput_onStop(self):
+        if self.getParameter("Trigger timerOutput if cancelled") and self.delayed:
+            self.timerOutput()
+        self.onUnload()]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Start the Delay box with the configured timeout value." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Stop the wait and stimulate the output." id="3" /><Output name="timerOutput" type="1" type_size="1" nature="1" inner="0" tooltip="Send a bang once delay set in parameters is elapsed, or if the box is stopped and the appropriate parameter is set." id="4" /><Parameter name="Timeout (s)" inherits_from_parent="0" content_type="2" value="1" default_value="1" min="0" max="5000" tooltip="Duration the box waits before stimulating the output." id="5" /><Parameter name="Trigger timerOutput if cancelled" inherits_from_parent="0" content_type="0" value="0" default_value="1" tooltip="If the box is currently delaying at least one signal and cancelled, output will be stimulated." id="6" /></Box><Box name="WebApp - Overview" id="16" localization="8" tooltip="Se il parametro [IndirizzoIP] non è vuoto mostra la pagina web &apos;overview&apos; utilizzando tale indirizzo.&#x0A;Se il parametro [IndirizzoIP] è vuoto tenta di collegarsi al topic formato da ciò che è contenuto nel parametro [Topic] + &apos;EXTRA/IP&apos;&#x0A;Se per il tempo in secondi specificato dal parametro [Timeout] non vengono ricevuti messaggi l&apos;esecuzione del blocco si interrompe&#x0A;Una volta ricevuto il pacchetto contenente l&apos;indirizzo IP ne estrapola il valore e mostra la pagina web &apos;overview&apos; utilizzando tale indirizzo&#x0A;È possibile inviare alla pagina web un Nome ed un Messaggio o Allarme attraverso l&apos;utilizzo degli appositi blocchi" x="819" y="433"><bitmap>media/images/box/internet/internet.png</bitmap><script language="4"><content><![CDATA[class MyClass(GeneratedClass):
+
+    def __init__(self):
+        GeneratedClass.__init__(self)
+        self.errImportMQTTLibrary = "Impossibile accedere alla libreria MQTT"
+        self.errBrokerConnection = "Impossibile connettersi al broker"
+        self.errTimeout = "Stato dispositivo IP non pervenuto"
+
+    def load_url(self, ip):
+        tabletService = self._getTabletService()
+        if tabletService:
+            tabletService.showWebview("http://" + ip + ":5000/overview")
+        else:
+            self.logger.warning("ALTabletService not found.")
+        self.onStopped()
+
+    def onLoad(self):
+        self.timeout = self.getParameter("Timeout")            # timeout for receiving the message
+        self.topic = self.getParameter("Topic")                # Topic to receive messages
+        self.manualIP = self.getParameter("IndirizzoIP")       # IndirizzoIP to connect to webpage
+
+    def setParameter(self, parameterName, newValue):
+        # The callback for when the parameter "Topic" is changed
+        if(parameterName == "Topic"):              # "Topic" is changed
+            self.logger.info(newValue)
+            self.topic = newValue                  # new value for "Topic"
+        if(parameterName == "IndirizzoIP"):        # "IndirizzoIP" is changed
+            self.logger.info(newValue)
+            self.manualIP = newValue               # new value for "IndirizzoIP"
+        self.logger.info("setParameter STOP")
+
+    def on_connect(self, client, userdata, flags, rc):
+        # The callback for when the client receives a CONNACK response from the server
+        self.logger.info ("Connected with result code "+str(rc))
+
+    def onUnload(self):
+        pass
+
+    def _getTabletService(self):
+        tabletService = None
+        try:
+            tabletService = self.session().service("ALTabletService")
+        except Exception as e:
+            self.logger.error(e)
+        return tabletService
+
+    def on_message(self, client, userdata, msg):
+        # We create TabletService here in order to avoid
+        # problems with connections and disconnections of the tablet during the life of the application
+        self.IP = str(msg.payload)
+
+        if self.IP != self.manualIP:
+            self.load_url(self.IP)
+            self.manualIP = self.IP
+
+        self.timer.stop()               # Stops the current timer
+        self.timer.start(False)         # Restarts the timer (for another message)
+
+
+    def onTimer(self):
+        # Timer callback - Timer box taken as a reference
+        self.timer.stop()              # Stop the timer
+        self.Errore(self.errTimeout)   # Timeout error
+        self.client.loop_stop()        # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()      # disconnects from the broker
+
+    def startTimer(self):
+        # The timer starts after self.timeout seconds - Timer box taken as a reference
+        import qi                                 # Import the qi framework
+        self.timer = qi.PeriodicTask()            # timer is an object to execute an operation periodically and asynchronously
+        self.timer.setCallback(self.onTimer)      # set the callback used by the periodictask
+        self.timer.setUsPeriod(self.timeout * 1000 * 1000)    # Set the call interval in microseconds.
+        self.timer.start(False)                   # True: immediate callback ; False: after first period
+
+    def onInput_onStart(self):
+        if self.manualIP != '':
+            self.load_url(self.manualIP)
+        else:
+            # This method is called when the onStart input port is stimulated
+            # Methods corresponding to the inputs of the box need to be defined in the script
+            # with the following syntax: onInput_<input-name>.
+            try:
+                # The package that implements MQTT in Python is paho-mqtt
+                # The package has 3 modules: client, publish, subscribe
+                # publish and subscribe provide support functions to allow publication and subscription of messages in a one-shot manner
+                # The client module provides the Client class to manage the connection with the broker, sending and receiving messages.
+                import paho.mqtt.client as mqtt
+            except:
+                self.Errore(self.errImportMQTTLibrary)
+
+            # The NAOqi executable which runs on the robot is a broker. When it starts, it loads some libraries.
+            # Each library contains one or more modules (tipically a class) that use the broker to advertise their methods.
+            # ALMemory is the module to access to the shared memory of the robot called AlMemory.
+            # ALMemory is a centralized memory used to store all key information related to the hardware configuration of your robot.
+            # ALMemory provides information about the current state of the Actuators and the Sensors.
+            # ALMemory can also be used to store and retrieve named values, and act as a hub for the distribution of event
+            # The "session" object allows you to connect to the robot functions using the "service" method
+            # The service method takes the name of the service to which you intend to connect (ALMemory) and returns a proxy to connect to it
+            # memory is a proxy, in practice an object, that through the getData method, accesses a previously defined variable
+            memory = self.session().service("ALMemory")
+            url = memory.getData("Pepper/mqtt/hostname")
+            pwd = memory.getData("Pepper/mqtt/password")
+            port = int(memory.getData("Pepper/mqtt/port"))
+            usn = memory.getData("Pepper/mqtt/username")
+
+            #Topic to subscribe to receive the IP
+            self.topic_IP = self.topic + '/EXTRA/IP'
+            self.logger.info ("IP: " + self.topic_IP)
+
+            self.client = mqtt.Client()    # self.client is the object instance of the Client class
+            if usn and pwd:                                 # If username and password are set
+                self.client.username_pw_set(usn,pwd)        # then they are associated with the "client" object
+
+            self.client.on_connect = self.on_connect        # binds the connection to callback function "on_connect"
+
+            self.client.on_message = self.on_message        # binds the receipt of a message to the callback function "on_message"
+
+            try:
+                # connects to the broker (IP, port, keepalive)
+                # keepalive:  maximum period in seconds allowed between communications with the broker.
+                #  If no other messages are being exchanged,the client will send ping messages to the broker
+                self.client.connect(url, port, 60)
+            except:
+                self.Errore(self.errBrokerConnection)
+
+            self.startTimer()                               # start the timer
+            self.client.subscribe (self.topic_IP)           # Subscribe to the topic to receive the message
+
+            # Callbacks are dependent on the client loop as without the loop the callbacks aren’t triggered.
+            self.client.loop_forever()
+
+    def onInput_onStop(self):
+        # We create TabletService here in order to avoid
+        # problems with connections and disconnections of the tablet during the life of the application
+        tabletService = self._getTabletService()
+        if tabletService:
+            tabletService.hideWebview()
+        else:
+            self.logger.warning("ALTabletService not found.")
+        self.onStopped()]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="" id="3" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" /><Parameter name="Topic" inherits_from_parent="0" content_type="3" value="unisadiem/dmcs/sensor" default_value="unisadiem/dmcs/sensor" custom_choice="0" tooltip="" id="5" /><Parameter name="Timeout" inherits_from_parent="0" content_type="1" value="60" default_value="60" min="1" max="100" tooltip="" id="6" /><Parameter name="IndirizzoIP" inherits_from_parent="0" content_type="3" value="" default_value="" custom_choice="0" tooltip="" id="7" /></Box><Box name="Hide Web View" id="17" localization="8" tooltip="Hides the webview (html content) on the tablet, behind a generic cover&#x0A;&#x0A;V1.0.0&#x0A;" x="326" y="38"><bitmap>media/images/box/internet/internet.png</bitmap><script language="4"><content><![CDATA[
+
+class MyClass(GeneratedClass):
+
+    def __init__(self):
+        GeneratedClass.__init__(self)
+
+    def onLoad(self):
+        pass
+
+    def onUnload(self):
+        pass
+
+    def _getTabletService(self):
+        tabletService = None
+        try:
+            tabletService = self.session().service("ALTabletService")
+        except Exception as e:
+            self.logger.error(e)
+        return tabletService
+
+    def onInput_onStart(self):
+        # We create TabletService here in order to avoid
+        # problems with connections and disconnections of the tablet during the life of the application
+        tabletService = self._getTabletService()
+        if tabletService:
+            tabletService.hideWebview()
+        else:
+            self.logger.warning("ALTabletService not found.")
+        self.onStopped()]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="3" /></Box><Box name="Accelerometro/Giroscopio" id="18" localization="8" tooltip="Tenta di collegarsi al topic formato da ciò che è contenuto nel parametro [Topic] + &apos;ACC_GYRO&apos;&#x0A;Se per il tempo in secondi specificato dal parametro [Timeout] non vengono ricevuti messaggi l&apos;esecuzione del blocco si interrompe&#x0A;Il numero di pacchetti che può ricevere è specificato dal parametro [NumeroMessaggi] (0 = infiniti messaggi)&#x0A;Una volta ricevuto il pacchetto contenente i valori associati all&apos;accelerometro ne estrapola il valore. Se tali valori, in media, superano quello specificato nel parametro [SogliaMovimento] vuol dire che la persona è in movimento e viene restituito True(1), altrimenti False(0) tramite la variaibile di uscita [Stato]" x="1159" y="328"><bitmap>media/images/box/movement/animation_mode.png</bitmap><script language="4"><content><![CDATA[import json
+class MyClass(GeneratedClass):
+
+    def __init__(self):
+        # initialize method
+        # "__init__" is a constructor. It is called when an object is created from a class
+        # "self"  is used to represent the instance of a class.
+        # By using the "self" keyword we access the attributes and methods of the class
+        # When the behavior starts to play, the initialize method is executed first
+        # It is a function which resets the basic box parameters that are common to all the boxes in Choregraphe.
+        # After that, the box is a “module” running in NAOqi, on the robot.
+        # The box has also initialized all its “parameters” so they are now available in the script.
+        # This method is called once per behavior.
+        GeneratedClass.__init__(self)
+        self.errImportMQTTLibrary = "Impossibile accedere alla libreria MQTT"
+        self.errBrokerConnection = "Impossibile connettersi al broker"
+        self.errTimeout = "Stato dispositivo ACCGYRO non pervenuto"
+
+    def onLoad(self):
+        #~ puts code for box initialization here
+        # This method is called when the box flow diagram is loading.
+        # It is necessarily called after the __init__ method of all the boxes of the current behavior.
+        # When a flow diagram is loading, this method is called on each box of current level before any IO can be stimulated.
+        self.timeout = self.getParameter("Timeout")            # timeout for receiving the message
+        self.topic = self.getParameter("Topic")                # Topic to receive messages
+        self.msgnum = self.getParameter("NumeroMessaggi")      # Number of messages to receive
+        self.threshold = self.getParameter("SogliaMovimento")  # Threshold to determine the movement
+
+        self.x = 0
+        self.y = 0
+        self.z = 0
+
+    def setParameter(self, parameterName, newValue):
+        # The callback for when the parameter "Topic" is changed
+        if(parameterName == "Topic"):              # "Topic" is changed
+            self.logger.info(newValue)
+            self.topic = newValue                  # new value for "Topic"
+        if(parameterName == "SogliaMovimento"):    # "SogliaMovimento" is changed
+            self.logger.info(newValue)
+            self.threshold = newValue              # new value for "SogliaMovimento"
+        self.logger.info("setParameter STOP")
+
+    def on_connect(self, client, userdata, flags, rc):
+        # The callback for when the client receives a CONNACK response from the server
+        self.logger.info ("Connected with result code "+str(rc))
+
+    # This function measues if user is moving along x or y direction
+    def has_device_moved(self, data, threshold):
+        total_movement_x = 0
+        total_movement_y = 0
+        total_movement_z = 0
+        for sample in data:
+            total_movement_x += abs(sample['x'])
+            total_movement_y += abs(sample['y'])
+            total_movement_y += abs(sample['z'])
+        average_movement_x = total_movement_x / len(data)
+        delta_x = abs(average_movement_x - self.x)
+        average_movement_y = total_movement_y / len(data)
+        delta_y = abs(average_movement_y - self.y)
+        average_movement_z = total_movement_z / len(data)
+        delta_z = abs(average_movement_z - self.z)
+
+        self.x = average_movement_x
+        self.y = average_movement_y
+        self.z = average_movement_z
+        return delta_x > self.threshold or delta_y > self.threshold or delta_z > self.threshold
+
+    def on_message(self, client, userdata, msg):
+        # The callback for when a PUBLISH message is received from the server.
+        self.msgnum -= 1                # Decrease the number of messages to receive
+
+        movements = list(json.loads(str(msg.payload))["samples"])
+        self.Stato(self.has_device_moved(movements, self.threshold))
+
+
+        self.timer.stop()               # Stops the current timer
+        self.timer.start(False)         # Restarts the timer (for another message)
+
+        if (self.msgnum == 0):          # All requested messages have been received
+            self.onInput_onStop()       # The block is completed
+
+    def onTimer(self):
+        # Timer callback - Timer box taken as a reference
+        self.timer.stop()              # Stop the timer
+        self.Errore(self.errTimeout)   # Timeout error
+        self.client.loop_stop()        # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()      # disconnects from the broker
+
+    def startTimer(self):
+        # The timer starts after self.timeout seconds - Timer box taken as a reference
+        import qi                                 # Import the qi framework
+        self.timer = qi.PeriodicTask()            # timer is an object to execute an operation periodically and asynchronously
+        self.timer.setCallback(self.onTimer)      # set the callback used by the periodictask
+        self.timer.setUsPeriod(self.timeout * 1000 * 1000)    # Set the call interval in microseconds.
+        self.timer.start(False)                   # True: immediate callback ; False: after first period
+
+    def onInput_onStart(self):
+        # This method is called when the onStart input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        try:
+            # The package that implements MQTT in Python is paho-mqtt
+            # The package has 3 modules: client, publish, subscribe
+            # publish and subscribe provide support functions to allow publication and subscription of messages in a one-shot manner
+            # The client module provides the Client class to manage the connection with the broker, sending and receiving messages.
+            import paho.mqtt.client as mqtt
+        except:
+            self.Errore(self.errImportMQTTLibrary)
+
+        # The NAOqi executable which runs on the robot is a broker. When it starts, it loads some libraries.
+        # Each library contains one or more modules (tipically a class) that use the broker to advertise their methods.
+        # ALMemory is the module to access to the shared memory of the robot called AlMemory.
+        # ALMemory is a centralized memory used to store all key information related to the hardware configuration of your robot.
+        # ALMemory provides information about the current state of the Actuators and the Sensors.
+        # ALMemory can also be used to store and retrieve named values, and act as a hub for the distribution of event
+        # The "session" object allows you to connect to the robot functions using the "service" method
+        # The service method takes the name of the service to which you intend to connect (ALMemory) and returns a proxy to connect to it
+        # memory is a proxy, in practice an object, that through the getData method, accesses a previously defined variable
+        memory = self.session().service("ALMemory")
+        url = memory.getData("Pepper/mqtt/hostname")
+        pwd = memory.getData("Pepper/mqtt/password")
+        port = int(memory.getData("Pepper/mqtt/port"))
+        usn = memory.getData("Pepper/mqtt/username")
+
+        #Topic to subscribe to receive the status of ACCGYRO
+        self.topic_ACCGYRO = self.topic + '/ACC_GYRO'
+        self.logger.info ("ACCGYRO: " + self.topic_ACCGYRO)
+
+        self.client = mqtt.Client()    # self.client is the object instance of the Client class
+        if usn and pwd:                                 # If username and password are set
+            self.client.username_pw_set(usn,pwd)        # then they are associated with the "client" object
+
+        self.client.on_connect = self.on_connect        # binds the connection to callback function "on_connect"
+
+        self.client.on_message = self.on_message        # binds the receipt of a message to the callback function "on_message"
+
+        try:
+            # connects to the broker (IP, port, keepalive)
+            # keepalive:  maximum period in seconds allowed between communications with the broker.
+            #  If no other messages are being exchanged,the client will send ping messages to the broker
+            self.client.connect(url, port, 60)
+        except:
+            self.Errore(self.errBrokerConnection)
+
+        self.startTimer()                               # start the timer
+        self.client.subscribe (self.topic_ACCGYRO)          # Subscribe to the topic to receive the message
+
+        # Callbacks are dependent on the client loop as without the loop the callbacks aren’t triggered.
+        self.client.loop_forever()
+
+
+    def onInput_onStop(self):
+        # This method is called when the onStop input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        self.timer.stop()                  # stop the timer
+        self.client.loop_stop()            # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()          # Disconnects from the broker
+        self.msgnum = self.getParameter("NumeroMessaggi")      # Reset number of messages to receive
+        self.onStopped()                   # Stimulates the onStopped output of the box
+
+    def onUnload(self):
+        #put clean-up code here
+        try:
+            self.client.disconnect ()          # Disconnects from the broker
+        except:
+            pass]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" /><Output name="Errore" type="3" type_size="1" nature="1" inner="0" tooltip="" id="5" /><Output name="Stato" type="2" type_size="1" nature="2" inner="0" tooltip="" id="6" /><Parameter name="Topic" inherits_from_parent="0" content_type="3" value="unisadiem/dmcs/sensor" default_value="unisadiem/dmcs/sensor" custom_choice="0" tooltip="" id="7" /><Parameter name="NumeroMessaggi" inherits_from_parent="0" content_type="1" value="0" default_value="0" min="0" max="100" tooltip="" id="8" /><Parameter name="Timeout" inherits_from_parent="0" content_type="1" value="60" default_value="60" min="1" max="100" tooltip="" id="9" /><Parameter name="SogliaMovimento" inherits_from_parent="0" content_type="1" value="300" default_value="300" min="0" max="1000" tooltip="" id="10" /></Box><Box name="Movimento - Comandi" id="19" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="1127" y="539"><bitmap>media/images/box/box-script.png</bitmap><script language="4"><content><![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("-attiva controllo movimento\n-termina controllo movimento")]]></content></script><pluginContent><text><![CDATA[-attiva controllo movimento
+-termina controllo movimento]]></text></pluginContent><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" /></Box><Box name="Pubblica Nome" id="20" localization="8" tooltip="Pubblica il nome indicato nel parametro [Nome] nel  topic specificato nel parametro [Topic] + &apos;EXTRA/Nome&apos;" x="1184" y="31"><bitmap>media/images/box/internet/email.png</bitmap><script language="4"><content><![CDATA[class MyClass(GeneratedClass):
+
+    def __init__(self):
+        # initialize method
+        # "__init__" is a constructor. It is called when an object is created from a class
+        # "self"  is used to represent the instance of a class.
+        # By using the "self" keyword we access the attributes and methods of the class
+        # When the behavior starts to play, the initialize method is executed first
+        # It is a function which resets the basic box parameters that are common to all the boxes in Choregraphe.
+        # After that, the box is a “module” running in NAOqi, on the robot.
+        # The box has also initialized all its “parameters” so they are now available in the script.
+        # This method is called once per behavior.
+        GeneratedClass.__init__(self)
+        self.errImportMQTTLibrary = "Impossibile accedere alla libreria MQTT"
+        self.errBrokerConnection = "Impossibile connettersi al broker"
+
+    def onLoad(self):
+        #~ puts code for box initialization here
+        # This method is called when the box flow diagram is loading.
+        # It is necessarily called after the __init__ method of all the boxes of the current behavior.
+        # When a flow diagram is loading, this method is called on each box of current level before any IO can be stimulated.
+        self.topic = self.getParameter("Topic")                        # Topic to publish the message
+        self.message = self.getParameter("Nome")                  # Message to send
+
+    def setParameter(self, parameterName, newValue):
+        # The callback for when a parameter is changed
+        if(parameterName == "Topic"):              # "Topic" is changed
+            self.topic = newValue                  # new value for "Topic"
+        if(parameterName == "Nome"):               # "Nome" is changed
+            self.message = newValue                # new value for "Nome"
+        self.logger.info("setParameter STOP")
+
+    def on_connect(self, client, userdata, flags, rc):
+        # The callback for when the client receives a CONNACK response from the server
+        self.logger.info ("Connected with result code "+str(rc))
+
+    def onInput_onStart(self):
+        # This method is called when the onStart input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        try:
+            # The package that implements MQTT in Python is paho-mqtt
+            # The package has 3 modules: client, publish, subscribe
+            # publish and subscribe provide support functions to allow publication and subscription of messages in a one-shot manner
+            # The client module provides the Client class to manage the connection with the broker, sending and receiving messages.
+            import paho.mqtt.client as mqtt
+        except:
+            self.Errore(self.errImportMQTTLibrary)
+
+        # The NAOqi executable which runs on the robot is a broker. When it starts, it loads some libraries.
+        # Each library contains one or more modules (tipically a class) that use the broker to advertise their methods.
+        # ALMemory is the module to access to the shared memory of the robot called AlMemory.
+        # ALMemory is a centralized memory used to store all key information related to the hardware configuration of your robot.
+        # ALMemory provides information about the current state of the Actuators and the Sensors.
+        # ALMemory can also be used to store and retrieve named values, and act as a hub for the distribution of event
+        # The "session" object allows you to connect to the robot functions using the "service" method
+        # The service method takes the name of the service to which you intend to connect (ALMemory) and returns a proxy to connect to it
+        # memory is a proxy, in practice an object, that through the getData method, accesses a previously defined variable
+        memory = self.session().service("ALMemory")
+        url = memory.getData("Pepper/mqtt/hostname")
+        pwd = memory.getData("Pepper/mqtt/password")
+        port = int(memory.getData("Pepper/mqtt/port"))
+        usn = memory.getData("Pepper/mqtt/username")
+
+        #Topic to publish the name
+        self.topic_NAME = self.topic + '/EXTRA/Nome'
+        self.logger.info ("Nome: " + self.topic_NAME)
+
+        self.client = mqtt.Client()    # self.client is the object instance of the Client class
+        if usn and pwd:                                 # If username and password are set
+            self.client.username_pw_set(usn,pwd)        # then they are associated with the "client" object
+
+        self.client.on_connect = self.on_connect        # binds the connection to callback function "on_connect"
+
+        try:
+            # connects to the broker (IP, port, keepalive)
+            # keepalive:  maximum period in seconds allowed between communications with the broker.
+            #  If no other messages are being exchanged,the client will send ping messages to the broker
+            self.client.connect(url, port, 60)
+        except:
+            self.Errore(self.errBrokerConnection)
+
+        self.client.publish (self.topic_NAME, self.message)    # Publish the message on the topic
+        # Callbacks are dependent on the client loop as without the loop the callbacks aren’t triggered.
+        self.client.loop_forever()
+
+    def onInput_onStop(self):
+        # This method is called when the onStop input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        self.timer.stop()                  # stop the timer
+        self.client.loop_stop()            # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()          # Disconnects from the broker
+        self.onStopped()                   # Stimulates the onStopped output of the box
+
+    def onUnload(self):
+        #put clean-up code here
+        try:
+            self.client.disconnect ()          # Disconnects from the broker
+        except:
+            pass]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" /><Output name="Errore" type="3" type_size="1" nature="1" inner="0" tooltip='A seconda dei casi trasmette:&#x0A;&quot;Impossibile accedere alla libreria MQTT&quot;&#x0A;&quot;Impossibile connettersi al broker&quot;&#x0A;&quot;Messaggio di feedback non ricevuto&quot;' id="5" /><Parameter name="Topic" inherits_from_parent="0" content_type="3" value="unisadiem/dmcs/sensor" default_value="" custom_choice="0" tooltip="" id="6" /><Parameter name="Nome" inherits_from_parent="0" content_type="3" value="Enrico" default_value="" custom_choice="0" tooltip="" id="7" /></Box><Box name="Pubblica Messaggio" id="21" localization="8" tooltip='Pubblica il messaggio indicato nel parametro [Messaggio] nel  topic specificato nel parametro [Topic] + &quot;EXTRA/Messaggio&quot;' x="1283" y="106"><bitmap>media/images/box/internet/email.png</bitmap><script language="4"><content><![CDATA[class MyClass(GeneratedClass):
+
+    def __init__(self):
+        # initialize method
+        # "__init__" is a constructor. It is called when an object is created from a class
+        # "self"  is used to represent the instance of a class.
+        # By using the "self" keyword we access the attributes and methods of the class
+        # When the behavior starts to play, the initialize method is executed first
+        # It is a function which resets the basic box parameters that are common to all the boxes in Choregraphe.
+        # After that, the box is a “module” running in NAOqi, on the robot.
+        # The box has also initialized all its “parameters” so they are now available in the script.
+        # This method is called once per behavior.
+        GeneratedClass.__init__(self)
+        self.errImportMQTTLibrary = "Impossibile accedere alla libreria MQTT"
+        self.errBrokerConnection = "Impossibile connettersi al broker"
+
+    def onLoad(self):
+        #~ puts code for box initialization here
+        # This method is called when the box flow diagram is loading.
+        # It is necessarily called after the __init__ method of all the boxes of the current behavior.
+        # When a flow diagram is loading, this method is called on each box of current level before any IO can be stimulated.
+        self.topic = self.getParameter("Topic")                        # Topic to publish the message
+        self.message = self.getParameter("Messaggio")                  # Message to send
+
+    def setParameter(self, parameterName, newValue):
+        # The callback for when a parameter is changed
+        if(parameterName == "Topic"):              # "Topic" is changed
+            self.topic = newValue                  # new value for "Topic"
+        if(parameterName == "Messaggio"):          # "Messaggio" is changed
+            self.message = newValue                # new value for "Messaggio"
+        self.logger.info("setParameter STOP")
+
+    def on_connect(self, client, userdata, flags, rc):
+        # The callback for when the client receives a CONNACK response from the server
+        self.logger.info ("Connected with result code "+str(rc))
+
+    def onInput_onStart(self):
+        # This method is called when the onStart input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        try:
+            # The package that implements MQTT in Python is paho-mqtt
+            # The package has 3 modules: client, publish, subscribe
+            # publish and subscribe provide support functions to allow publication and subscription of messages in a one-shot manner
+            # The client module provides the Client class to manage the connection with the broker, sending and receiving messages.
+            import paho.mqtt.client as mqtt
+        except:
+            self.Errore(self.errImportMQTTLibrary)
+
+        # The NAOqi executable which runs on the robot is a broker. When it starts, it loads some libraries.
+        # Each library contains one or more modules (tipically a class) that use the broker to advertise their methods.
+        # ALMemory is the module to access to the shared memory of the robot called AlMemory.
+        # ALMemory is a centralized memory used to store all key information related to the hardware configuration of your robot.
+        # ALMemory provides information about the current state of the Actuators and the Sensors.
+        # ALMemory can also be used to store and retrieve named values, and act as a hub for the distribution of event
+        # The "session" object allows you to connect to the robot functions using the "service" method
+        # The service method takes the name of the service to which you intend to connect (ALMemory) and returns a proxy to connect to it
+        # memory is a proxy, in practice an object, that through the getData method, accesses a previously defined variable
+        memory = self.session().service("ALMemory")
+        url = memory.getData("Pepper/mqtt/hostname")
+        pwd = memory.getData("Pepper/mqtt/password")
+        port = int(memory.getData("Pepper/mqtt/port"))
+        usn = memory.getData("Pepper/mqtt/username")
+
+        #Topic to publish the message
+        self.topic_MSG = self.topic + '/EXTRA/Messaggio'
+        self.logger.info ("Message: " + self.topic_MSG)
+
+        self.client = mqtt.Client()    # self.client is the object instance of the Client class
+        if usn and pwd:                                 # If username and password are set
+            self.client.username_pw_set(usn,pwd)        # then they are associated with the "client" object
+
+        self.client.on_connect = self.on_connect        # binds the connection to callback function "on_connect"
+
+        try:
+            # connects to the broker (IP, port, keepalive)
+            # keepalive:  maximum period in seconds allowed between communications with the broker.
+            #  If no other messages are being exchanged,the client will send ping messages to the broker
+            self.client.connect(url, port, 60)
+        except:
+            self.Errore(self.errBrokerConnection)
+
+        self.client.publish (self.topic_MSG, self.message)    # Publish the message on the topic
+        # Callbacks are dependent on the client loop as without the loop the callbacks aren’t triggered.
+        self.client.loop_forever()
+
+    def onInput_onStop(self):
+        # This method is called when the onStop input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        self.timer.stop()                  # stop the timer
+        self.client.loop_stop()            # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()          # Disconnects from the broker
+        self.onStopped()                   # Stimulates the onStopped output of the box
+
+    def onUnload(self):
+        #put clean-up code here
+        try:
+            self.client.disconnect ()          # Disconnects from the broker
+        except:
+            pass]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" /><Output name="Errore" type="3" type_size="1" nature="1" inner="0" tooltip='A seconda dei casi trasmette:&#x0A;&quot;Impossibile accedere alla libreria MQTT&quot;&#x0A;&quot;Impossibile connettersi al broker&quot;&#x0A;&quot;Messaggio di feedback non ricevuto&quot;' id="5" /><Parameter name="Topic" inherits_from_parent="0" content_type="3" value="unisadiem/dmcs/sensor" default_value="" custom_choice="0" tooltip="" id="6" /><Parameter name="Messaggio" inherits_from_parent="0" content_type="3" value="valori ottimali" default_value="" custom_choice="0" tooltip="" id="7" /></Box><Box name="Pubblica Allarme" id="22" localization="8" tooltip='Pubblica il messaggio indicato nel parametro [Messaggio] nel  topic specificato nel parametro [Topic] + &quot;EXTRA/Allarme&quot;' x="1380" y="181"><bitmap>media/images/box/internet/email.png</bitmap><script language="4"><content><![CDATA[class MyClass(GeneratedClass):
+
+    def __init__(self):
+        # initialize method
+        # "__init__" is a constructor. It is called when an object is created from a class
+        # "self"  is used to represent the instance of a class.
+        # By using the "self" keyword we access the attributes and methods of the class
+        # When the behavior starts to play, the initialize method is executed first
+        # It is a function which resets the basic box parameters that are common to all the boxes in Choregraphe.
+        # After that, the box is a “module” running in NAOqi, on the robot.
+        # The box has also initialized all its “parameters” so they are now available in the script.
+        # This method is called once per behavior.
+        GeneratedClass.__init__(self)
+        self.errImportMQTTLibrary = "Impossibile accedere alla libreria MQTT"
+        self.errBrokerConnection = "Impossibile connettersi al broker"
+
+    def onLoad(self):
+        #~ puts code for box initialization here
+        # This method is called when the box flow diagram is loading.
+        # It is necessarily called after the __init__ method of all the boxes of the current behavior.
+        # When a flow diagram is loading, this method is called on each box of current level before any IO can be stimulated.
+        self.topic = self.getParameter("Topic")                        # Topic to publish the message
+        self.message = self.getParameter("Allarme")                  # Message to send
+
+    def setParameter(self, parameterName, newValue):
+        # The callback for when a parameter is changed
+        if(parameterName == "Topic"):              # "Topic" is changed
+            self.topic = newValue                  # new value for "Topic"
+        if(parameterName == "Allarme"):            # "Allarme" is changed
+            self.message = newValue                # new value for "Allarme"
+        self.logger.info("setParameter STOP")
+
+    def on_connect(self, client, userdata, flags, rc):
+        # The callback for when the client receives a CONNACK response from the server
+        self.logger.info ("Connected with result code "+str(rc))
+
+    def onInput_onStart(self):
+        # This method is called when the onStart input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        try:
+            # The package that implements MQTT in Python is paho-mqtt
+            # The package has 3 modules: client, publish, subscribe
+            # publish and subscribe provide support functions to allow publication and subscription of messages in a one-shot manner
+            # The client module provides the Client class to manage the connection with the broker, sending and receiving messages.
+            import paho.mqtt.client as mqtt
+        except:
+            self.Errore(self.errImportMQTTLibrary)
+
+        # The NAOqi executable which runs on the robot is a broker. When it starts, it loads some libraries.
+        # Each library contains one or more modules (tipically a class) that use the broker to advertise their methods.
+        # ALMemory is the module to access to the shared memory of the robot called AlMemory.
+        # ALMemory is a centralized memory used to store all key information related to the hardware configuration of your robot.
+        # ALMemory provides information about the current state of the Actuators and the Sensors.
+        # ALMemory can also be used to store and retrieve named values, and act as a hub for the distribution of event
+        # The "session" object allows you to connect to the robot functions using the "service" method
+        # The service method takes the name of the service to which you intend to connect (ALMemory) and returns a proxy to connect to it
+        # memory is a proxy, in practice an object, that through the getData method, accesses a previously defined variable
+        memory = self.session().service("ALMemory")
+        url = memory.getData("Pepper/mqtt/hostname")
+        pwd = memory.getData("Pepper/mqtt/password")
+        port = int(memory.getData("Pepper/mqtt/port"))
+        usn = memory.getData("Pepper/mqtt/username")
+
+        #Topic to publish the alarm
+        self.topic_ALR = self.topic + '/EXTRA/Allarme'
+        self.logger.info ("Allarme: " + self.topic_ALR)
+
+        self.client = mqtt.Client()    # self.client is the object instance of the Client class
+        if usn and pwd:                                 # If username and password are set
+            self.client.username_pw_set(usn,pwd)        # then they are associated with the "client" object
+
+        self.client.on_connect = self.on_connect        # binds the connection to callback function "on_connect"
+
+        try:
+            # connects to the broker (IP, port, keepalive)
+            # keepalive:  maximum period in seconds allowed between communications with the broker.
+            #  If no other messages are being exchanged,the client will send ping messages to the broker
+            self.client.connect(url, port, 60)
+        except:
+            self.Errore(self.errBrokerConnection)
+
+        self.client.publish (self.topic_ALR, self.message)    # Publish the message on the topic
+        # Callbacks are dependent on the client loop as without the loop the callbacks aren’t triggered.
+        self.client.loop_forever()
+
+    def onInput_onStop(self):
+        # This method is called when the onStop input port is stimulated
+        # Methods corresponding to the inputs of the box need to be defined in the script
+        # with the following syntax: onInput_<input-name>.
+        self.timer.stop()                  # stop the timer
+        self.client.loop_stop()            # Stop the loop by calling loop.stop(). You should stop the loop before you exit the script.
+        self.client.disconnect ()          # Disconnects from the broker
+        self.onStopped()                   # Stimulates the onStopped output of the box
+
+    def onUnload(self):
+        #put clean-up code here
+        try:
+            self.client.disconnect ()          # Disconnects from the broker
+        except:
+            pass]]></content></script><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" /><Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" /><Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" /><Output name="Errore" type="3" type_size="1" nature="1" inner="0" tooltip='A seconda dei casi trasmette:&#x0A;&quot;Impossibile accedere alla libreria MQTT&quot;&#x0A;&quot;Impossibile connettersi al broker&quot;&#x0A;&quot;Messaggio di feedback non ricevuto&quot;' id="5" /><Parameter name="Topic" inherits_from_parent="0" content_type="3" value="unisadiem/dmcs/sensor" default_value="" custom_choice="0" tooltip="" id="6" /><Parameter name="Allarme" inherits_from_parent="0" content_type="3" value="ATTENZIONE!" default_value="" custom_choice="0" tooltip="" id="7" /></Box><Box name="Overview - Comandi" id="23" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="1406" y="538"><bitmap>media/images/box/box-script.png</bitmap><script language="4"><content><![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("-attiva overview\n-termina overview")]]></content></script><pluginContent><text><![CDATA[-attiva overview
+-termina overview]]></text></pluginContent><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" /></Box><Box name="Nome - Comandi" id="24" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="51" y="622"><bitmap>media/images/box/box-script.png</bitmap><script language="4"><content><![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("-invia nome")]]></content></script><pluginContent><text><![CDATA[-invia nome]]></text></pluginContent><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" /></Box><Box name="Messaggio - Comandi" id="25" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="310" y="624"><bitmap>media/images/box/box-script.png</bitmap><script language="4"><content><![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("-invia messaggio")]]></content></script><pluginContent><text><![CDATA[-invia messaggio]]></text></pluginContent><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" /></Box><Box name="Allarme - Comandi" id="26" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="576" y="624"><bitmap>media/images/box/box-script.png</bitmap><script language="4"><content><![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("-invia allarme")]]></content></script><pluginContent><text><![CDATA[-invia allarme]]></text></pluginContent><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" /></Box><Box name="Terminazione programma" id="27" localization="8" tooltip="To comment your behavior. Enter the text here and move the box where you like&#x0A;to add the comment.&#x0A;&#x0A;Note: This box is not functional and has no effect on the behavior." plugin="textedit_plugin" x="854" y="628"><bitmap>media/images/box/box-script.png</bitmap><script language="4"><content><![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		GeneratedClass.__init__(self)
+
+	def onInput_onStart(self):
+		self.onStopped("-fine dimostrazione")]]></content></script><pluginContent><text><![CDATA[-fine dimostrazione]]></text></pluginContent><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when Diagram is loaded." id="1" /></Box><Box name="Switch Case" id="28" localization="8" tooltip="Test input value and stimulate the output matching to this value. If there is no&#x0A;matching output, the default output (onDefault) is stimulated.&#x0A;&#x0A;You can edit a case by left double-clicking on the line. You can add a&#x0A;case by right clicking on a line and selecting &apos;Insert a row&apos;. You can delete&#x0A;a case by right clicking on a line and selecting &apos;Remove a row&apos;." plugin="dispatcher_plugin" x="889" y="40"><bitmap>media/images/box/interaction/choice.png</bitmap><script language="4"><content><![CDATA[# /!\ Generated content. Do not edit!
+class MyClass(GeneratedClass):
+	def __init__(self):
+		try: # disable autoBind
+		  GeneratedClass.__init__(self, False)
+		except TypeError: # if NAOqi < 1.14
+		  GeneratedClass.__init__( self )
+
+	def onInput_onStart(self, p):
+		p = self.typeConversion(p)
+		if(p == self.typeConversion("invia nome")):
+			self.output_1(p)
+		elif(p == self.typeConversion("invia messaggio")):
+			self.output_2(p)
+		elif(p == self.typeConversion("invia allarme")):
+			self.output_3(p)
+		else:
+			self.onDefault()
+
+	def typeConversion(self, p):
+		try:
+			p = float(p)
+			pint = int(p)
+			if( p == pint ):
+				p = pint
+		except:
+			p = str(p)
+		return p]]></content></script><pluginContent><keywords><keyword>&quot;invia nome&quot;</keyword><keyword>&quot;invia messaggio&quot;</keyword><keyword>&quot;invia allarme&quot;</keyword><keyword></keyword></keywords></pluginContent><Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" /><Input name="onStart" type="0" type_size="1" nature="1" inner="0" tooltip="Value to test." id="2" /><Output name="onDefault" type="1" type_size="1" nature="2" inner="0" tooltip="If the input value does not match any value set on the box." id="3" /><Output name="output_1" type="0" type_size="1" nature="2" inner="0" tooltip="This IO has been automatically added by box. Read box tooltip for more information." id="4" /><Output name="output_2" type="0" type_size="1" nature="2" inner="0" tooltip="This IO has been automatically added by box. Read box tooltip for more information." id="5" /><Output name="output_3" type="0" type_size="1" nature="2" inner="0" tooltip="This IO has been automatically added by box. Read box tooltip for more information." id="6" /></Box><Link inputowner="2" indexofinput="2" outputowner="0" indexofoutput="2" /><Link inputowner="6" indexofinput="2" outputowner="2" indexofoutput="3" /><Link inputowner="3" indexofinput="2" outputowner="6" indexofoutput="3" /><Link inputowner="0" indexofinput="4" outputowner="3" indexofoutput="7" /><Link inputowner="3" indexofinput="5" outputowner="7" indexofoutput="5" /><Link inputowner="3" indexofinput="4" outputowner="7" indexofoutput="6" /><Link inputowner="7" indexofinput="2" outputowner="3" indexofoutput="8" /><Link inputowner="7" indexofinput="3" outputowner="3" indexofoutput="9" /><Link inputowner="3" indexofinput="4" outputowner="9" indexofoutput="6" /><Link inputowner="9" indexofinput="2" outputowner="3" indexofoutput="10" /><Link inputowner="9" indexofinput="3" outputowner="3" indexofoutput="11" /><Link inputowner="3" indexofinput="5" outputowner="9" indexofoutput="5" /><Link inputowner="3" indexofinput="5" outputowner="4" indexofoutput="5" /><Link inputowner="3" indexofinput="4" outputowner="4" indexofoutput="6" /><Link inputowner="10" indexofinput="2" outputowner="3" indexofoutput="12" /><Link inputowner="10" indexofinput="3" outputowner="3" indexofoutput="13" /><Link inputowner="3" indexofinput="5" outputowner="10" indexofoutput="5" /><Link inputowner="4" indexofinput="2" outputowner="3" indexofoutput="14" /><Link inputowner="4" indexofinput="3" outputowner="3" indexofoutput="15" /><Link inputowner="15" indexofinput="2" outputowner="7" indexofoutput="4" /><Link inputowner="15" indexofinput="2" outputowner="9" indexofoutput="4" /><Link inputowner="15" indexofinput="2" outputowner="10" indexofoutput="4" /><Link inputowner="15" indexofinput="2" outputowner="4" indexofoutput="4" /><Link inputowner="3" indexofinput="6" outputowner="15" indexofoutput="4" /><Link inputowner="18" indexofinput="2" outputowner="3" indexofoutput="16" /><Link inputowner="18" indexofinput="3" outputowner="3" indexofoutput="17" /><Link inputowner="3" indexofinput="5" outputowner="18" indexofoutput="5" /><Link inputowner="15" indexofinput="2" outputowner="18" indexofoutput="4" /><Link inputowner="3" indexofinput="4" outputowner="18" indexofoutput="6" /><Link inputowner="17" indexofinput="2" outputowner="6" indexofoutput="3" /><Link inputowner="12" indexofinput="2" outputowner="3" indexofoutput="8" /><Link inputowner="12" indexofinput="3" outputowner="3" indexofoutput="9" /><Link inputowner="13" indexofinput="2" outputowner="3" indexofoutput="10" /><Link inputowner="13" indexofinput="3" outputowner="3" indexofoutput="11" /><Link inputowner="14" indexofinput="2" outputowner="3" indexofoutput="12" /><Link inputowner="14" indexofinput="3" outputowner="3" indexofoutput="13" /><Link inputowner="16" indexofinput="2" outputowner="3" indexofoutput="18" /><Link inputowner="16" indexofinput="3" outputowner="3" indexofoutput="19" /><Link inputowner="28" indexofinput="2" outputowner="3" indexofoutput="20" /><Link inputowner="20" indexofinput="2" outputowner="28" indexofoutput="4" /><Link inputowner="21" indexofinput="2" outputowner="28" indexofoutput="5" /><Link inputowner="22" indexofinput="2" outputowner="28" indexofoutput="6" /><Link inputowner="20" indexofinput="2" outputowner="16" indexofoutput="4" /></Diagram></BehaviorKeyframe></BehaviorLayer></Timeline></Box></ChoregrapheProject>

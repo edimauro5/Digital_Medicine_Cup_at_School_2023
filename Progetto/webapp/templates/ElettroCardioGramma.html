@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="{{ url_for('static', filename='js/chart.umd.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/mqttws31.min.js') }}"></script>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="shortcut icon" />
+    <title>ElettroCardioGramma</title>
+</head>
+
+<style>
+    body {
+        background-image: url("static/img/background.jpg");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+
+    .message {
+        color: lightgreen;
+    }
+
+    .alarm {
+        animation: blinker 1s linear infinite;
+        color: red;
+    }
+
+    @keyframes blinker {
+        50% {
+            opacity: 0;
+        }
+    }
+</style>
+
+<body>
+    <!-- Struttura della pagina -->
+    <header class="header d-flex align-items-center justify-content-center mb-2" style="background-color: #0D6EFD;">
+        <div class="d-flex align-items-center text-center my-2" style="color: white; background-color: #0D6EFD;">
+            <img src="static/img/ecg.png" style="filter: brightness(0) invert(1); height: 2.5em; margin-right: 10px;">
+            <h1>ElettroCardioGramma</h1>
+        </div>
+    </header>
+    <main>
+        <div class="container shadow p-2" style="background-color: white;">
+            <canvas id="canva"></canvas>
+            <div>
+                <p class="fs-1 text-center mb-0" id="nome"></p>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="row">
+                        <p class="fs-1 text-center mb-0" id="actual"></p>
+                    </div>
+                    <div class="row">
+                        <p class="fs-1 text-center mb-0" id="lost"></p>
+                    </div>
+                </div>
+                <div class="col">
+                    <p class="fs-1 text-center mb-0" id="msg"></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Meccanismo di Chart.js -->
+    <script>
+        var canva = document.getElementById("canva").getContext("2d");
+        var ECGs = [];
+        var labels = [];
+        var i = 0;
+        var interval = 128;
+
+        var chart = new Chart(canva, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: "ECG",
+                        data: ECGs,
+                        pointRadius: 10,
+                        pointHoverRadius: 10,
+                        pointHoverBorderWidth: 5,
+                        pointHoverBorderColor: "black",
+                        fill: "false",
+                        borderColor: "black",
+                    },
+                ],
+            },
+            options: {
+                legend: {
+                    display: false,
+                },
+                layout: {
+                    padding: {
+                        top: 10,
+                        bottom: 0,
+                        right: 25,
+                        left: 25,
+                    },
+                },
+            },
+        });
+
+        var client = new Paho.MQTT.Client("localhost", 8080, "client-" + new Date().getTime().toString());
+        client.onMessageArrived = onMessageArrived;
+        client.connect({
+            onSuccess: onConnect,
+        });
+
+        function onMessageArrived(message) {
+            var topic = message.destinationName.split("/");
+            if (topic[topic.length - 1] == "ECG") {
+                if (JSON.parse(message.payloadString)["status"] == 1) {
+                    for (i = 0; i < interval; i++) {
+                        ECGs.push(JSON.parse(message.payloadString)["samples"][i]);
+                        labels.push(i + 1);
+                        if (ECGs.length > interval) {
+                            ECGs.splice(0, ECGs.length - interval);
+                            labels.splice(0, labels.length - interval);
+                        }
+                        document.getElementById("actual").innerHTML = "<span>Sample attuale: " + JSON.parse(message.payloadString)["samplenum"] + "</span>";
+                        document.getElementById("lost").innerHTML = "<span>Sample perso: ---</span>";
+                    }
+                }
+                else if (JSON.parse(message.payloadString)["status"] == 2) {
+                    document.getElementById("lost").innerHTML = "<span>Sample perso: " + JSON.parse(message.payloadString)["samplenum"] + "<span>";
+                }
+                //console.log(ECGs.length);
+            } else if (topic[topic.length - 1] == "Nome") {
+                document.getElementById("nome").innerHTML = "<span>" + message.payloadString + "</span>";
+            } else if (topic[topic.length - 1] == "Messaggio") {
+                document.getElementById("msg").innerHTML = "<span class='message'>" + message.payloadString + "</span>";
+            } else if (topic[topic.length - 1] == "Allarme") {
+                document.getElementById("msg").innerHTML = "<span class='alarm'>" + message.payloadString + "</span>";
+            }
+            chart.update();
+        }
+
+        function onConnect() {
+            //window.alert("Connessione avvenuta con successo");
+            client.subscribe("unisadiem/dmcs/sensor/ECG");
+            client.subscribe("unisadiem/dmcs/sensor/EXTRA/Nome");
+            client.subscribe("unisadiem/dmcs/sensor/EXTRA/Messaggio");
+            client.subscribe("unisadiem/dmcs/sensor/EXTRA/Allarme");
+        }
+    </script>
+</body>
+
+</html>

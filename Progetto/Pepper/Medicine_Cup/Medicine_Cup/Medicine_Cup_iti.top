@@ -1,0 +1,40 @@
+topic: ~Medicine_Cup()
+language: iti
+
+# Presentazione
+u: (e:onStart) Ciao sono Pepper, sono in grado di monitorare i tuoi parametri vitali, indossa la fascia e chiedimi cosa monitorare
+
+# Comandi per BPM
+u: (attiva controllo bpm) Sto attivando il controllo $BPM_AttivaControllo=1
+u: (termina controllo bpm) Sto disattivando il controllo $BPM_TerminaControllo=1
+
+# Comandi per RPM
+u: (attiva controllo rpm) Sto attivando il controllo $RPM_AttivaControllo=1
+u: (termina controllo rpm) Sto disattivando il controllo $RPM_TerminaControllo=1
+
+# Comandi per BPM
+u: (attiva controllo ecg) Sto attivando il controllo $ECG_AttivaControllo=1
+u: (termina controllo ecg) Sto disattivando il controllo $ECG_TerminaControllo=1
+
+# Comandi per BATTERIA
+u: (attiva controllo batteria) Sto attivando il controllo $BATTERIA_AttivaControllo=1
+u: (termina controllo batteria) Sto disattivando il controllo $BATTERIA_TerminaControllo=1
+
+# Comandi per ACCGYRO
+u: (attiva controllo movimento) Sto attivando il controllo $ACCGYRO_AttivaControllo=1
+u: (termina controllo movimento) Sto disattivando il controllo $ACCGYRO_TerminaControllo=1
+
+# Comandi per OVERVIEW
+u: (attiva overview) Sto attivando il controllo $OVERVIEW_AttivaControllo=1
+u: (termina overview) Sto disattivando il controllo $OVERVIEW_TerminaControllo=1
+
+# Comandi per Nome/Messaggio/Allarme
+u: (_["invia nome" "invia messaggio" "invia allarme"]) $Richiesta=$1
+
+# Fine applicazione
+u: (fine dimostrazione) Il programma verrà terminato. A presto. $onStopped=1
+  
+# Eventi di input
+u: (e:onData) Il dato letto è $onData
+u: (e:onMyError) $onMyError Il programma verrà terminato. A presto. $onStopped=1
+u: (e:onEnd) Sono stati letti i messaggi richiesti. Chiedimi un altro comando
